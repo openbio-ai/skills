@@ -10,7 +10,7 @@ bunx skills add https://github.com/openbio-ai/skills --skill openbio
 or
 
 ```bash
-npmx skills add https://github.com/openbio-ai/skills --skill openbio
+npx skills add https://github.com/openbio-ai/skills --skill openbio
 ```
 
 This installs the OpenBio skill to all detected agents (Claude Code, Cursor, Cline, etc.) via symlink.
