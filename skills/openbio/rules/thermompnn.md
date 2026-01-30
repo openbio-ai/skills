@@ -187,6 +187,51 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 5. **Validate experimentally**: Computational predictions need validation
 6. **Combine with design**: Use results to guide ProteinMPNN design
 
+## Sample Output
+
+### Job Response
+```json
+{
+  "success": true,
+  "job_id": "thermompnn_abc123",
+  "message": "Job submitted successfully",
+  "estimated_runtime": "5-15 minutes"
+}
+```
+
+### CSV Output Example
+```csv
+Mutation,ddG_pred,Position,wildtype,mutation,Chain
+A5V,-1.8,5,A,V,A
+A5G,0.2,5,A,G,A
+S10F,-0.9,10,S,F,A
+K15E,1.5,15,K,E,A
+```
+
+### What Good Output Looks Like
+- **Many stabilizing mutations** (ΔΔG < -1.0) in structured regions
+- **Consistent predictions** across similar positions
+- **File size**: Proportional to N × 19 (residues × mutations)
+
+## Typical Performance
+
+| Protein Size | Time | Output Size |
+|--------------|------|-------------|
+| 100 aa | 2-3 min | ~1900 predictions |
+| 300 aa | 5-10 min | ~5700 predictions |
+| 500 aa | 10-20 min | ~9500 predictions |
+
+## Verify Success
+
+```bash
+# Check job completed
+curl -s "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+  -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
+
+# Count predictions (should be ~19 × num_residues)
+wc -l output.csv
+```
+
 ## Use Cases
 
 1. **Protein Stabilization**
@@ -202,3 +247,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
    - Focus on specific positions
    - Compare all possible substitutions
    - Rank by predicted effect
+
+---
+
+**Next**: Apply stabilizing mutations → Validate with `Boltz/Chai` structure prediction.

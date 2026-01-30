@@ -213,12 +213,86 @@ curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
    - Compare multiple samples
    - Use `ranking_data.json` to identify best structures
 
+## Sample Output
+
+### Successful Job Response
+```json
+{
+  "success": true,
+  "job_id": "chai_xyz123abc456",
+  "message": "Job submitted successfully",
+  "estimated_runtime": "10-20 minutes"
+}
+```
+
+### Output Directory
+```
+predictions/
+├── pred_0.cif          # Best predicted structure
+├── pred_1.cif          # Second best structure
+├── scores.model_idx_0.npz
+├── ranking_data.json   # Model rankings
+└── msa_coverage.pdf    # If MSAs used
+```
+
+### What Good Output Looks Like
+- **pTM > 0.7**: Confident global structure
+- **ipTM > 0.5**: Confident interface (> 0.7 for high confidence)
+- **pLDDT > 70**: Per-residue confidence
+- **CIF files**: With reasonable atom positions
+
+## Typical Performance
+
+| Campaign Size | Time | Notes |
+|---------------|------|-------|
+| 1 complex | 10-20 min | Single validation |
+| 10 complexes | 1-2 hours | Small batch |
+| 100 complexes | 8-16 hours | Standard campaign |
+
+**Per-complex**: ~10-20 min for typical binder-target complex.
+
+## Verify Success
+
+```bash
+# Check job completed
+curl -s "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+  -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
+
+# After downloading, verify CIF files exist
+ls *.cif | wc -l  # Should match num_diffn_samples
+```
+
+### Failure Recovery
+
+```
+Low pLDDT across predictions?
+├── Increase recycles
+│   └── num_trunk_recycles: 5-7
+├── Check sequence quality
+│   └── Validate amino acids, SMILES strings
+└── Try with more samples
+    └── num_diffn_samples: 8-10
+
+Low ipTM (interface quality)?
+├── Check chain order in FASTA
+│   └── Ensure multiple chains present
+├── Interface region may be disordered
+│   └── Check if binding region is well-defined
+└── Try Boltz-2 for comparison
+    └── Different models may capture different features
+```
+
 ## Chai vs Boltz Comparison
 
 | Feature | Chai-1 | Boltz-2 |
 |---------|--------|---------|
-| Binding affinity | No | Yes |
-| Glycans | Yes | Limited |
-| Multi-modal | Strong | Strong |
+| Binding affinity | No | **Yes** |
+| Glycans | **Yes** | Limited |
+| Multi-modal | **Strong** | Strong |
 | Speed | Moderate | Moderate |
-| MSA-free option | No | Yes |
+| MSA-free option | No | **Yes** |
+| Best for | Multi-modal complexes | Affinity prediction |
+
+---
+
+**Next**: After validation → Use `ProteinMPNN/LigandMPNN` for sequence optimization or `ThermoMPNN` for stability.

@@ -188,6 +188,63 @@ What do you need?
 | -1.0 to +1.0 | Neutral |
 | > +1.0 | Destabilizing |
 
+## Quality Control Guidelines
+
+### Critical Limitation
+
+**Individual metrics have weak predictive power for binding**. Research shows:
+- Individual metric ROC AUC: 0.64-0.66 (slightly better than random)
+- Metrics are **pre-screening filters**, not affinity predictors
+- **Composite scoring is essential** for meaningful ranking
+
+### Sequential Filtering Pipeline
+
+```python
+# Stage 1: Structural confidence
+designs = designs[designs['pLDDT'] > 0.85]
+
+# Stage 2: Self-consistency (scRMSD)
+designs = designs[designs['scRMSD'] < 2.0]
+
+# Stage 3: Binding quality
+designs = designs[(designs['ipTM'] > 0.5) & (designs['PAE_interaction'] < 10)]
+
+# Stage 4: Expression checks
+designs = designs[designs['cysteine_count'] % 2 == 0]  # Even cysteines
+```
+
+### Campaign Health Assessment
+
+| Pass Rate | Status | Action |
+|-----------|--------|--------|
+| > 15% | Excellent | Proceed to experimental testing |
+| 10-15% | Good | Normal, proceed |
+| 5-10% | Marginal | Review parameters, increase designs |
+| < 5% | Poor | Diagnose issues before scaling |
+
+### Failure Recovery Trees
+
+**Low pLDDT across predictions?**
+```
+├── Check scRMSD distribution
+│   ├── High scRMSD (>2.5Å) → Backbone issue, regenerate
+│   └── Low scRMSD but low pLDDT → Disordered regions
+├── Increase sequence diversity
+│   └── num_seq_per_target: 16-32, temp: 0.2
+└── Try different design approach
+    └── Use SolubleMPNN or different tool
+```
+
+**Low ipTM (interface quality)?**
+```
+├── Review hotspot selection
+│   └── Are hotspots surface-exposed?
+├── Increase binder length
+│   └── More contact area helps
+└── Check interface geometry
+    └── Flat vs concave targets need different approaches
+```
+
 ## Rate Limits (All Tools)
 
 - **Per minute**: 2 jobs

@@ -262,6 +262,63 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 | Low quality | Poor sampling | Increase num_designs |
 | Memory error | Large complex | Simplify target |
 
+## Sample Output
+
+### Successful Job Response
+```json
+{
+  "success": true,
+  "job_id": "boltzgen_def456ghi789",
+  "message": "Job submitted successfully",
+  "estimated_runtime": "30-60 minutes"
+}
+```
+
+### Directory After Completion
+```
+out/boltzgen/2501301234/
+├── intermediate_designs/           # Raw diffusion outputs
+│   ├── design_0.cif
+│   └── design_0.npz
+├── intermediate_designs_inverse_folded/
+│   ├── refold_cif/                # ⭐ Refolded complexes
+│   └── aggregate_metrics_analyze.csv
+└── final_ranked_designs/
+    ├── final_10_designs/          # ⭐ Top designs
+    └── results_overview.pdf       # 📊 Summary plots
+```
+
+### What Good Output Looks Like
+- **Refolding RMSD < 2.0Å**: Design folds as predicted
+- **ipTM > 0.5**: Confident interface
+- **All designs complete pipeline**: No errors in logs
+
+## Typical Performance
+
+| Campaign Size | Time | Notes |
+|---------------|------|-------|
+| 50 designs | 30-45 min | Quick exploration |
+| 100 designs | 1-1.5 hours | Standard campaign |
+| 200 designs | 2-3 hours | Large campaign |
+| 500+ designs | Not recommended | Split into multiple jobs |
+
+**Per-design**: ~30-60 seconds for typical binder.
+
+## Verify Success
+
+```bash
+# Check job completed
+curl -s "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+  -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
+
+# After downloading results:
+# Count final designs (should match budget)
+ls final_ranked_designs/final_*_designs/*.cif | wc -l
+
+# Check results overview exists
+ls final_ranked_designs/results_overview.pdf
+```
+
 ## Best Practices
 
 1. **Start small**: num_designs: 50, budget: 10 for testing
@@ -270,6 +327,48 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 4. **Provide CIF path**: If YAML references structure file
 5. **Check results_overview.pdf**: Quick quality assessment
 6. **Use defaults for filtering**: Auto-tuned for most cases
+
+### Failure Recovery
+
+```
+Too few designs pass filtering?
+├── Increase num_designs
+│   └── Try 100-200 instead of 50
+├── Relax alpha (more diversity)
+│   └── alpha: 0.01-0.1
+├── Check binding site specification
+│   └── Are hotspots surface-exposed?
+└── Simplify constraints
+    └── Remove overly restrictive binding_types
+
+Low ipTM across designs?
+├── Review hotspot selection
+│   ├── Are hotspots surface-exposed?
+│   └── Try 3-6 different hotspot combinations
+├── Increase binder length
+│   └── sequence: 80..120 instead of 60..80
+├── Check interface geometry
+│   └── Flat targets need different approach than concave
+└── Try different protocol
+    └── peptide-anything for smaller interfaces
+
+High refolding RMSD (> 2.5Å)?
+├── Sequences don't specify intended structure
+│   └── Increase inverse_fold_num_sequences: 2-3
+├── Try lower alpha (quality focus)
+│   └── alpha: 0.001 or 0.0
+└── Reduce complexity
+    └── Simpler topology, fewer constraints
+```
+
+## Campaign Health Assessment
+
+| Pass Rate | Status | Action |
+|-----------|--------|--------|
+| > 15% | Excellent | Proceed to experimental testing |
+| 10-15% | Good | Normal, proceed |
+| 5-10% | Marginal | Review parameters, increase designs |
+| < 5% | Poor | Diagnose issues before scaling |
 
 ## BoltzGen vs Other Tools
 
@@ -282,3 +381,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 | Binding sites | Precise | Text | Backbone |
 | Complexity | High | Low | Low |
 | Use case | Full pipeline | Exploration | Sequence only |
+
+---
+
+**Next**: Validate top designs with `Boltz` or `Chai` for independent confirmation → Experimental testing.

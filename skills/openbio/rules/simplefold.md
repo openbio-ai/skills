@@ -174,16 +174,56 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 4. **Consider alternatives**: For complexes, use Boltz/Chai
 5. **Compare methods**: Run SimpleFold + Boltz for important proteins
 
+## Sample Output
+
+### Job Response
+```json
+{
+  "success": true,
+  "job_id": "simplefold_xyz789",
+  "message": "Job submitted successfully",
+  "estimated_runtime": "5-10 minutes"
+}
+```
+
+### What Good Output Looks Like
+- **pLDDT > 70**: Reliable per-residue confidence
+- **B-factor column**: Contains pLDDT scores
+- **mmCIF file**: ~50-200 KB for typical protein
+
+## Typical Performance
+
+| Sequence Length | Time |
+|-----------------|------|
+| Short (<100 aa) | 3-5 min |
+| Medium (100-300 aa) | 5-10 min |
+| Long (>300 aa) | 10-15 min |
+
+## Verify Success
+
+```bash
+# Check job completed
+curl -s "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+  -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
+
+# Verify structure file exists
+ls *.cif
+```
+
 ## SimpleFold vs Boltz/Chai
 
 | Feature | SimpleFold | Boltz | Chai |
 |---------|------------|-------|------|
-| Speed | Fast | Moderate | Moderate |
+| Speed | **Fast** | Moderate | Moderate |
 | Single protein | Good | Excellent | Excellent |
-| Complexes | No | Yes | Yes |
-| Ligands | No | Yes | Yes |
-| Binding affinity | No | Yes (v2) | No |
-| MSA-free | Yes | Optional | No |
+| Complexes | No | **Yes** | **Yes** |
+| Ligands | No | **Yes** | **Yes** |
+| Binding affinity | No | **Yes (v2)** | No |
+| MSA-free | **Yes** | Optional | No |
 
 **Use SimpleFold for**: Quick single-protein predictions, initial screening
 **Use Boltz/Chai for**: Complexes, ligands, production-quality structures
+
+---
+
+**Next**: For complexes → Use `Boltz` or `Chai`. For sequence optimization → Use `ProteinMPNN`.

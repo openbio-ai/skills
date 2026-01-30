@@ -205,14 +205,60 @@ Load output in molecular viewer and check:
    - Design mutagenesis experiments
    - Test predicted contacts
 
+## Sample Output
+
+### Job Response
+```json
+{
+  "success": true,
+  "job_id": "geodock_abc123",
+  "message": "Job submitted successfully",
+  "estimated_runtime": "30-60 seconds"
+}
+```
+
+### Output PDB
+- Single PDB file with both chains in docked orientation
+- Standard PDB format
+- Can be visualized immediately in PyMOL/ChimeraX
+
+### What Good Output Looks Like
+- **Reasonable contact interface**: Many atom-atom contacts
+- **No severe clashes**: Minimal steric clashes
+- **Buried surface**: 800-2000 Å² at interface
+
+## Typical Performance
+
+| Protein Size | Time |
+|--------------|------|
+| Small (<200 aa each) | 25-30 sec |
+| Medium (200-400 aa) | 30-60 sec |
+| Large (>400 aa) | 60-120 sec |
+
+## Verify Success
+
+```bash
+# Check job completed
+curl -s "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+  -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
+
+# Verify both chains present in output
+grep "^ATOM" docked.pdb | cut -c22 | sort -u
+# Should show both chain IDs
+```
+
 ## GeoDock vs Boltz for Complexes
 
 | Feature | GeoDock | Boltz |
 |---------|---------|-------|
 | Input | Two PDB files | Sequences or YAML |
-| Speed | Fast (30-60 sec) | Slower (10-30 min) |
-| Binding affinity | No | Yes (Boltz-2) |
-| Accuracy | Good | Generally better |
+| Speed | **Fast (30-60 sec)** | Slower (10-30 min) |
+| Binding affinity | No | **Yes (Boltz-2)** |
+| Accuracy | Good | **Generally better** |
 | Use case | Quick docking | Production complexes |
 
 **Recommendation**: Use GeoDock for quick screening, Boltz for final structures.
+
+---
+
+**Next**: Analyze interface → Refine with molecular dynamics or validate with `Boltz` for higher accuracy.

@@ -228,12 +228,61 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 5. **Iterate**: Refine description based on results
 6. **Combine approaches**: Use Pinal for initial design, ProteinMPNN for optimization
 
+## Sample Output
+
+### Job Response
+```json
+{
+  "success": true,
+  "job_id": "pinal_text_abc123",
+  "message": "Job submitted successfully",
+  "estimated_runtime": "10-20 minutes"
+}
+```
+
+### Output Sequences
+```
+>Sequence_1_Highest_Confidence
+DFQKAKFAVQQLLKAWEAAPLLVLVVSVQLSCLAVVVQQKDKDALVVSCV...
+
+>Sequence_2_Second_Best
+NFQKTKFTVQELLKAWEAAPLLVLVVSVQLSCLAVVVQQKDKDALVVSCV...
+```
+
+### What Good Output Looks Like
+- **Diverse sequences**: Not all identical
+- **Reasonable length**: 100-400 aa typical for enzymes
+- **Standard amino acids**: Only 20 standard AAs
+
+## Typical Performance
+
+| Mode | Time |
+|------|------|
+| De novo (5 seqs) | 10-20 min |
+| Structure redesign | 5-15 min |
+
+## Verify Success
+
+```bash
+# Check job completed
+curl -s "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+  -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
+
+# Count generated sequences
+grep -c "^>" sequences.txt
+```
+
 ## Pinal vs Other Design Tools
 
 | Feature | Pinal | BoltzGen | ProteinMPNN |
 |---------|-------|----------|-------------|
 | Input | Text description | YAML + structure | Backbone PDB |
-| De novo | Yes | Yes | No |
-| Structure control | Low | High | High |
-| Binding site | Text-guided | Precise | Backbone-derived |
-| Use case | Exploration | Precision design | Fixed backbone |
+| De novo | **Yes** | **Yes** | No |
+| Structure control | Low | **High** | **High** |
+| Binding site | Text-guided | **Precise** | Backbone-derived |
+| Complexity | **Low** | High | Low |
+| Use case | **Exploration** | Precision design | Fixed backbone |
+
+---
+
+**Next**: Validate designed sequences with `Boltz/Chai` structure prediction → Optimize with `ProteinMPNN`.

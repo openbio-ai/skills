@@ -223,6 +223,106 @@ curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
 | Invalid format | YAML syntax error | Validate YAML online |
 | No affinity | Missing property | Add `properties: - affinity:` to YAML |
 
+## Sample Output
+
+### Successful Job Submission
+```json
+{
+  "success": true,
+  "job_id": "boltz_abc123def456",
+  "message": "Job submitted successfully",
+  "estimated_runtime": "15-20 minutes"
+}
+```
+
+### Completed Job Response
+```json
+{
+  "success": true,
+  "job": {
+    "job_id": "boltz_abc123def456",
+    "status": "completed",
+    "created_at": "2025-01-30T10:00:00Z",
+    "completed_at": "2025-01-30T10:18:32Z"
+  },
+  "output_files_signed_urls": {
+    "structure.cif": "https://s3.../structure.cif?...",
+    "confidence.json": "https://s3.../confidence.json?..."
+  }
+}
+```
+
+### What Good Output Looks Like
+- **pTM > 0.7**: Confident global structure
+- **ipTM > 0.5**: Confident interface (> 0.7 for high confidence)
+- **pLDDT > 0.7**: Confident per-residue predictions
+- **CIF file**: ~100-500 KB for typical complex
+
+## Typical Performance
+
+| Campaign Size | Time | Notes |
+|---------------|------|-------|
+| 1 complex | 10-20 min | Single validation |
+| 10 complexes | 1-2 hours | Small batch |
+| 50 complexes | 4-8 hours | Standard campaign |
+| 100 complexes | 8-16 hours | Large campaign |
+
+**Per-complex**: ~10-20 min for typical binder-target complex.
+
+## Verify Success
+
+```bash
+# Check job completed
+curl -s "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+  -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
+# Should return: "completed"
+
+# Verify output files exist
+curl -s "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
+  -H "X-API-Key: $OPENBIO_API_KEY" | jq '.output_files_signed_urls | keys'
+# Should list: structure files, confidence.json
+```
+
+## Tool Comparison
+
+| Feature | Boltz-2 | Chai-1 | SimpleFold |
+|---------|---------|--------|------------|
+| Single protein | ✓ | ✓ | ✓ |
+| Multi-chain complex | ✓ | ✓ | ✗ |
+| Small molecules | ✓ | ✓ | ✗ |
+| RNA/DNA | ✓ | ✓ | ✗ |
+| Glycans | Limited | ✓ | ✗ |
+| **Binding affinity** | **✓** | ✗ | ✗ |
+| MSA-free option | ✓ | ✗ | ✓ |
+| Speed | Moderate | Moderate | **Fast** |
+| Best for | Affinity, complexes | Multi-modal | Quick single protein |
+
+## Troubleshooting
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `Timeout` | Complex too large | Reduce sampling_steps, recycling_steps |
+| `Low confidence (<0.5)` | Unreliable prediction | Check sequence quality, enable MSA |
+| `CUDA out of memory` | Sequence too long | Keep under ~2000 residues, reduce diffusion_samples |
+| `Invalid YAML` | Syntax error | Validate YAML online, check quotes on SMILES |
+| `No affinity output` | Missing property | Add `properties: - affinity:` to YAML |
+| `KeyError: 'iptm'` | Single chain only | Ensure input has 2+ chains for interface metrics |
+| `File too large` | Input > 10MB | Compress or split input file |
+
+### Failure Recovery
+
+```
+Low confidence across predictions?
+├── Check sequence quality
+│   └── Validate amino acid sequence (standard 20 AAs only)
+├── Enable MSA server
+│   └── use_msa_server: true (provides evolutionary context)
+├── Increase sampling
+│   └── sampling_steps: 300-400, recycling_steps: 5
+└── Check if target is difficult
+    └── Some proteins are intrinsically disordered
+```
+
 ## Best Practices
 
 1. **Start with defaults** for initial predictions
@@ -231,3 +331,7 @@ curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
 4. **Check confidence scores** - aim for > 0.7
 5. **Use MSA server** unless you have specific reasons not to
 6. **For binding affinity**: Set `diffusion_samples_affinity: 5`
+
+---
+
+**Next**: After structure prediction → Use `ThermoMPNN` for stability analysis or `ProteinMPNN/LigandMPNN` for sequence optimization.

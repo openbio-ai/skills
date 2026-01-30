@@ -235,6 +235,53 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 | Processing timeout | Large protein | Reduce batches, disable packing |
 | Empty output | Bad PDB format | Check backbone completeness |
 
+## Sample Output
+
+### Successful Job Response
+```json
+{
+  "success": true,
+  "job_id": "ligandmpnn_abc123",
+  "message": "Job submitted successfully",
+  "estimated_runtime": "3-5 minutes"
+}
+```
+
+### Output FASTA Header
+```
+>enzyme_substrate_0001, score=1.45, global_score=1.38
+MKTAYIAKQRQISFVKSHFSRQLE...
+>enzyme_substrate_0002, score=1.52, global_score=1.41
+MKTAYIAKQRQISFVKSQFSRQLD...
+```
+
+### What Good Output Looks Like
+- **Score**: 1.0-2.0 (lower = more confident)
+- **Ligand detected**: "Found ligand: LIG (12 atoms)"
+- **Active site residues**: Preserved or optimized
+
+## Typical Performance
+
+| Campaign Size | Time | Notes |
+|---------------|------|-------|
+| 10 backbones × 8 seq | 10-15 min | Quick test |
+| 100 backbones × 8 seq | 45-90 min | Standard |
+| 500 backbones × 16 seq | 3-6 hours | Large campaign |
+
+**Throughput**: ~40-80 sequences/minute for typical proteins.
+
+## Verify Success
+
+```bash
+# Check job status
+curl -s "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+  -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
+
+# Verify ligand was detected in logs
+# Download results and check sequence count
+grep -c "^>" output.fa
+```
+
 ## Best Practices
 
 1. **Enable atom context**: Always use `ligand_mpnn_use_atom_context: true`
@@ -243,6 +290,26 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 4. **Start conservative**: Use temperature 0.1 initially
 5. **Validate with structure prediction**: Run Boltz on designed sequences
 6. **Increase batches for diversity**: Better than increasing batch_size
+
+### Failure Recovery
+
+```
+Ligand not recognized?
+├── Check HETATM records in PDB
+│   └── grep "^HETATM" protein.pdb | head
+├── Verify ligand has proper residue name
+│   └── Standard 3-letter code (e.g., ATP, NAD, LIG)
+└── Ensure ligand has coordinates
+    └── Check for 0,0,0 placeholder coordinates
+
+Low ligand_confidence?
+├── Verify ligand coordinates are correct
+│   └── Visual inspection in PyMOL/ChimeraX
+├── Increase cutoff_for_score
+│   └── ligand_mpnn_cutoff_for_score: 10.0-12.0
+└── Try with side chain context
+    └── ligand_mpnn_use_side_chain_context: true
+```
 
 ## LigandMPNN vs ProteinMPNN
 
@@ -253,3 +320,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 | Side chain packing | Yes | No |
 | Sequence scoring | Yes | No |
 | Speed | Slightly slower | Faster |
+
+---
+
+**Next**: Validate designed sequences with `Boltz` → Check stability with `ThermoMPNN`.
