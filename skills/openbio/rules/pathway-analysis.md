@@ -49,7 +49,7 @@ Pathways and interactions: KEGG, Reactome, STRING.
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=kegg_search" \
   -F 'params={"database": "pathway", "query": "cancer"}'
 ```
@@ -58,7 +58,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=kegg_get_entry" \
   -F 'params={"entry_id": "hsa05200"}'
 ```
@@ -67,7 +67,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=analyze_gene_list" \
   -F 'params={
     "genes": ["TP53", "BRCA1", "BRCA2", "ATM", "CHEK2"],
@@ -79,7 +79,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_string_network" \
   -F 'params={
     "identifiers": ["TP53", "BRCA1", "MDM2", "ATM"],
@@ -92,7 +92,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=analyze_string_enrichment" \
   -F 'params={
     "identifiers": ["TP53", "BRCA1", "BRCA2", "ATM", "CHEK2"],
@@ -104,7 +104,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_string_network_image" \
   -F 'params={"identifiers": ["TP53", "BRCA1", "MDM2"], "species": 9606}'
 ```

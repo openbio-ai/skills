@@ -52,7 +52,7 @@ Clinical and drug data: ClinicalTrials.gov, ClinVar, FDA, Open Targets.
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_clinical_trials" \
   -F 'params={
     "condition": "breast cancer",
@@ -65,7 +65,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_clinical_trial_details" \
   -F 'params={"nct_id": "NCT04379596"}'
 ```
@@ -75,13 +75,13 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 ```bash
 # By gene
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_clinvar" \
   -F 'params={"query": "BRCA1[gene]", "max_results": 20}'
 
 # By position
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_by_position" \
   -F 'params={"chromosome": "17", "start": 43044295, "stop": 43170245, "assembly": "GRCh38"}'
 ```
@@ -90,7 +90,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_drug_adverse_events" \
   -F 'params={"drug_name": "ibuprofen", "reaction": "liver injury", "limit": 20}'
 ```
@@ -99,7 +99,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_drug_label" \
   -F 'params={"drug_name": "aspirin"}'
 ```
@@ -109,13 +109,13 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 ```bash
 # Target
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_opentargets" \
   -F 'params={"query": "EGFR", "entity_type": "target"}'
 
 # Disease
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_opentargets" \
   -F 'params={"query": "lung cancer", "entity_type": "disease"}'
 ```
@@ -124,7 +124,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_target_disease_evidence" \
   -F 'params={"target_id": "ENSG00000146648", "disease_id": "EFO_0001071"}'
 ```

@@ -11,6 +11,12 @@ metadata:
 bunx skills add https://github.com/openbio-ai/skills --skill openbio
 ```
 
+or
+
+```bash
+npx skills add https://github.com/openbio-ai/skills --skill openbio
+```
+
 ## When to use
 
 Use this skill whenever working with:
@@ -30,7 +36,7 @@ Use this skill whenever working with:
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -H "Content-Type: multipart/form-data" \
   -F "tool_name=TOOL_NAME" \
   -F 'params={"param": "value"}'
@@ -60,25 +66,25 @@ Read individual rule files for detailed documentation and examples:
 ### List Tools
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 ### Search Tools
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/tools/search?q=protein" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 ### Get Tool Schema
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/tools/{tool_name}" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 ### Invoke Tool
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_pubmed" \
   -F 'params={"query": "CRISPR", "max_results": 5}'
 ```
@@ -87,7 +93,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 ```bash
 # For long-running jobs (submit_* tools), get output files:
 curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 # Returns signed URLs in output_files_signed_urls (valid 1 hour)
 ```
 

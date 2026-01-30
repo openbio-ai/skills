@@ -62,7 +62,7 @@ Access genomics data: Ensembl, ENA, NCBI Gene, GWAS Catalog, GEO.
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=lookup_gene" \
   -F 'params={"id": "BRCA1", "species": "human"}'
 ```
@@ -71,7 +71,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_sequence" \
   -F 'params={"id": "ENSG00000139618", "type": "genomic"}'
 ```
@@ -80,7 +80,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=vep_predict" \
   -F 'params={"variants": ["13:32936732:C:T"], "species": "human"}'
 ```
@@ -89,7 +89,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_gwas_associations_by_trait" \
   -F 'params={"trait": "EFO_0000384"}'
 ```
@@ -98,7 +98,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_gwas_variants_by_gene" \
   -F 'params={"gene": "APOE"}'
 ```
@@ -107,7 +107,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_geo_datasets" \
   -F 'params={"query": "breast cancer RNA-seq", "max_results": 10}'
 ```
@@ -116,7 +116,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_ena_portal" \
   -F 'params={"query": "breast cancer RNA-seq human", "result_type": "study"}'
 ```

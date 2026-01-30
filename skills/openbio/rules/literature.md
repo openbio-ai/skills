@@ -44,7 +44,7 @@ Search scientific literature: PubMed, arXiv, bioRxiv, OpenAlex.
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_pubmed" \
   -F 'params={"query": "CRISPR gene editing", "max_results": 10}'
 ```
@@ -53,7 +53,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=fetch_abstract" \
   -F 'params={"pubmed_id": "36812345"}'
 ```
@@ -62,7 +62,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=biorxiv_search_keywords" \
   -F 'params={"keywords": "protein folding", "max_results": 10}'
 ```
@@ -71,7 +71,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=biorxiv_recent_papers" \
   -F 'params={"server": "biorxiv", "days": 7}'
 ```
@@ -80,7 +80,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=arxiv_search" \
   -F 'params={"query": "machine learning protein structure", "max_results": 10}'
 ```
@@ -89,7 +89,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_literature" \
   -F 'params={"query": "deep learning drug discovery", "per_page": 25}'
 ```
@@ -98,7 +98,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_paper" \
   -F 'params={"identifier": "10.1038/s41586-021-03819-2"}'
 ```

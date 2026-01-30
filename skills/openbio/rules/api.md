@@ -4,10 +4,10 @@ Core API endpoints for tool discovery, invocation, and job management.
 
 ## Authentication
 
-All requests require `OPENBIO_API_KEY`:
+All requests require `OPENBIO_API_KEY` in the `X-API-Key` header:
 
 ```bash
--H "Authorization: Bearer $OPENBIO_API_KEY"
+-H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 **Base URL**: `https://openbio-api.fly.dev/`
@@ -18,7 +18,7 @@ All requests require `OPENBIO_API_KEY`:
 
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 Response:
@@ -41,7 +41,7 @@ Response:
 
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/tools/{tool_name}" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 Response includes JSON Schema for parameters:
@@ -64,7 +64,7 @@ Response includes JSON Schema for parameters:
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -H "Content-Type: multipart/form-data" \
   -F "tool_name=TOOL_NAME" \
   -F 'params={"param": "value"}'
@@ -84,21 +84,21 @@ Response:
 
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/tools/search?q=protein+structure" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 ### List Categories
 
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/tools/categories" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 ### Get Category Tools
 
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/tools/categories/{category_name}" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 ## File Uploads
@@ -107,7 +107,7 @@ Tools accepting files use multipart form data:
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=analyze_pdb_file" \
   -F 'params={}' \
   -F "pdb_file=@/path/to/structure.pdb"
@@ -122,7 +122,7 @@ Tools prefixed with `submit_` are long-running:
 ```bash
 # Submit job
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_boltz_prediction" \
   -F 'params={"sequence": "MVLSPADKTNVK..."}'
 ```
@@ -142,7 +142,7 @@ Response:
 
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 Response:
@@ -161,7 +161,7 @@ When a job completes, retrieve full details including **signed URLs to download 
 
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 Response:
@@ -203,7 +203,7 @@ curl -o confidence.json "https://s3.amazonaws.com/...signed-url..."
 
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/jobs" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 Query parameters:

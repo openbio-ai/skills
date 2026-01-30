@@ -53,7 +53,7 @@ Molecular analysis: RDKit, PubChem, ChEMBL, SA Score.
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=calculate_molecular_properties" \
   -F 'params={"smiles": "CC(=O)Oc1ccccc1C(=O)O"}'
 ```
@@ -62,7 +62,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=validate_and_canonicalize_smiles" \
   -F 'params={"smiles": "c1ccccc1"}'
 ```
@@ -71,7 +71,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=chembl_similarity_search_by_smiles" \
   -F 'params={"smiles": "CC(=O)Oc1ccccc1C(=O)O", "similarity": 70}'
 ```
@@ -80,7 +80,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=calculate_sa_score" \
   -F 'params={"smiles": "CC(=O)Oc1ccccc1C(=O)O"}'
 ```
@@ -89,7 +89,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_structural_alerts_from_smiles" \
   -F 'params={"smiles": "CC(=O)Oc1ccccc1C(=O)O"}'
 ```
@@ -99,13 +99,13 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 ```bash
 # PubChem
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_pubchem" \
   -F 'params={"query": "aspirin"}'
 
 # ChEMBL
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_chembl_by_name" \
   -F 'params={"compound_name": "aspirin"}'
 ```

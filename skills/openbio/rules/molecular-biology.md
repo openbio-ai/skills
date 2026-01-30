@@ -56,7 +56,7 @@ DNA manipulation: PCR, primers, restriction, Gibson/Golden Gate assembly.
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=design_primers" \
   -F 'params={
     "sequence": "ATGCGATCGATCGATCG...",
@@ -71,7 +71,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=run_pcr" \
   -F 'params={
     "template": "ATGCGATCG...CGATCGCAT",
@@ -84,7 +84,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=restriction_find_sites" \
   -F 'params={
     "sequence": "ATGAATTCGATCGGATCCGATC",
@@ -96,7 +96,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=restriction_digest" \
   -F 'params={
     "sequence": "ATGAATTCGATCGGATCCGATC",
@@ -109,7 +109,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=assemble_gibson" \
   -F 'params={
     "fragments": ["ATGCGATCGATCG...", "CGATCGCATAGCT..."],
@@ -121,7 +121,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=assemble_golden_gate" \
   -F 'params={
     "parts": [
@@ -136,7 +136,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=simulate_gel" \
   -F 'params={"fragments": [500, 1000, 2000, 5000], "ladder": "1kb", "gel_percent": 1.0}'
 ```

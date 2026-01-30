@@ -61,13 +61,13 @@ ML-based prediction: Boltz, Chai, GeoDock, ProteinMPNN, LigandMPNN, ThermoMPNN, 
 ```bash
 # Get info first
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_boltz_tool_info" \
   -F 'params={}'
 
 # Submit
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_boltz_prediction" \
   -F 'params={
     "sequences": [{"type": "protein", "sequence": "MVLSPADKTNVK..."}],
@@ -80,7 +80,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_chai_prediction" \
   -F 'params={
     "fasta_string": ">protein\nMVLSPADKTNVK...",
@@ -92,7 +92,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_proteinmpnn_prediction" \
   -F 'params={
     "pdb_path": "path/to/structure.pdb",
@@ -106,7 +106,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_ligandmpnn_prediction" \
   -F 'params={
     "pdb_path": "path/to/complex.pdb",
@@ -121,7 +121,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 ```bash
 # Quick status check
 curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/job_abc123/status" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 Response:
@@ -139,7 +139,7 @@ Once status is `completed`, get full job details with **signed download URLs**:
 
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/job_abc123" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 Response:
@@ -176,7 +176,7 @@ curl -o confidence.json "https://s3.amazonaws.com/...signed-url..."
 
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/jobs?status=completed&tool=submit_boltz_prediction" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY"
+  -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 ## Tool Comparison
@@ -206,12 +206,12 @@ curl -X GET "https://openbio-api.fly.dev/api/v1/jobs?status=completed&tool=submi
 ```bash
 # 1. Get tool info
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_boltz_tool_info" -F 'params={}'
 
 # 2. Submit prediction job
 RESPONSE=$(curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_boltz_prediction" \
   -F 'params={"sequences": [{"type": "protein", "sequence": "MVLSPADKTNVK..."}]}')
 JOB_ID=$(echo $RESPONSE | jq -r '.data.job_id')
@@ -219,7 +219,7 @@ JOB_ID=$(echo $RESPONSE | jq -r '.data.job_id')
 # 3. Poll for completion (with backoff)
 while true; do
   STATUS=$(curl -s "https://openbio-api.fly.dev/api/v1/jobs/$JOB_ID/status" \
-    -H "Authorization: Bearer $OPENBIO_API_KEY" | jq -r '.status')
+    -H "X-API-Key: $OPENBIO_API_KEY" | jq -r '.status')
   
   if [ "$STATUS" = "completed" ]; then break; fi
   if [ "$STATUS" = "failed" ]; then echo "Job failed"; exit 1; fi
@@ -229,7 +229,7 @@ done
 
 # 4. Get download URLs
 RESULT=$(curl -s "https://openbio-api.fly.dev/api/v1/jobs/$JOB_ID" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY")
+  -H "X-API-Key: $OPENBIO_API_KEY")
 
 # 5. Download output files
 STRUCTURE_URL=$(echo $RESULT | jq -r '.output_files_signed_urls.structure')

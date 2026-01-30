@@ -55,7 +55,7 @@ Query protein structure databases: PDB, PDBe, AlphaFold, UniProt.
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=fetch_pdb_metadata" \
   -F 'params={"pdb_id": "1MBO"}'
 ```
@@ -64,7 +64,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_best_structures_for_uniprot_id" \
   -F 'params={"uniprot_id": "P00533"}'
 ```
@@ -73,7 +73,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_alphafold_prediction" \
   -F 'params={"uniprot_id": "P00533"}'
 ```
@@ -82,7 +82,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=run_seq_similarity_query" \
   -F 'params={"sequence": "MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFL...", "identity_cutoff": 0.7}'
 ```
@@ -91,7 +91,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=run_text_query" \
   -F 'params={"query": "kinase inhibitor", "return_type": "entry", "max_results": 10}'
 ```
@@ -100,7 +100,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_binding_site_residues" \
   -F 'params={"pdb_id": "3HTB"}'
 ```
