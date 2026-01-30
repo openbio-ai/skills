@@ -5,6 +5,12 @@ metadata:
   tags: biology, protein, genomics, chemistry, bioinformatics, drug-discovery
 ---
 
+## Installation
+
+```bash
+bunx skills add https://github.com/openbio-ai/skills --skill openbio
+```
+
 ## When to use
 
 Use this skill whenever working with:
