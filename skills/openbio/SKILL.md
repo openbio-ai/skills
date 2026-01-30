@@ -97,6 +97,12 @@ curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
 # Returns signed URLs in output_files_signed_urls (valid 1 hour)
 ```
 
+**Important**: Always check the tool schema before invoking to get exact parameter names:
+```bash
+curl -X GET "https://openbio-api.fly.dev/api/v1/tools/{tool_name}" \
+  -H "X-API-Key: $OPENBIO_API_KEY"
+```
+
 ## Tool Categories
 
 | Category | Tools | Description |

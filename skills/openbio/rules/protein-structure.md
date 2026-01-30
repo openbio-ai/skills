@@ -57,8 +57,10 @@ Query protein structure databases: PDB, PDBe, AlphaFold, UniProt.
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=fetch_pdb_metadata" \
-  -F 'params={"pdb_id": "1MBO"}'
+  -F 'params={"pdb_ids": ["1MBO"]}'
 ```
+
+**Tip**: Always check the tool schema first with `GET /api/v1/tools/{tool_name}` to see exact parameter names.
 
 ### Find Best PDB for UniProt
 
@@ -66,7 +68,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_best_structures_for_uniprot_id" \
-  -F 'params={"uniprot_id": "P00533"}'
+  -F 'params={"uniprot_accession": "P00533"}'
 ```
 
 ### AlphaFold Prediction
@@ -75,7 +77,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_alphafold_prediction" \
-  -F 'params={"uniprot_id": "P00533"}'
+  -F 'params={"uniprot_accession": "P00533"}'
 ```
 
 ### Sequence Similarity Search
