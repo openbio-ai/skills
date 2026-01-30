@@ -1,83 +1,141 @@
 # Structure Prediction Tools
 
-ML-based prediction: Boltz, Chai, GeoDock, ProteinMPNN, LigandMPNN, ThermoMPNN, Pinal.
+Run ML-based structure prediction and protein design via OpenBio API.
 
-## Important
+## When to Use
 
-- All tools are **long-running** (`submit_*` prefix)
-- Returns `job_id` to track status
-- Poll `fetch_job_status` until completion
+Use structure prediction tools when:
+1. Validating designed protein sequences (does it fold?)
+2. Predicting protein-protein complex structures
+3. Predicting protein-ligand binding poses
+4. Designing new sequences for a backbone (inverse folding)
+5. Optimizing protein stability
 
-## Tools
+## Decision Tree
+
+```
+What do you need?
+│
+├─ Predict structure from sequence?
+│   ├─ Single protein → submit_boltz_prediction or submit_chai_prediction
+│   ├─ Protein complex → submit_boltz_prediction (multi-chain FASTA)
+│   └─ Protein + ligand → submit_chai_prediction (supports SMILES)
+│
+├─ Design sequence for backbone?
+│   ├─ No ligand in binding site → submit_proteinmpnn_prediction
+│   ├─ Ligand present → submit_ligandmpnn_prediction
+│   └─ Need thermostability → submit_thermompnn_prediction
+│
+├─ Dock ligand to protein?
+│   └─ submit_geodock_prediction
+│
+└─ De novo protein design?
+    └─ submit_pinal_text_design or submit_pinal_structure_design
+```
+
+## Quality Thresholds
+
+### Structure Prediction (Boltz/Chai)
+
+| Metric | Excellent | Good | Poor |
+|--------|-----------|------|------|
+| pTM | > 0.8 | 0.6-0.8 | < 0.6 |
+| ipTM (interface) | > 0.7 | 0.5-0.7 | < 0.5 |
+| pLDDT (per-residue) | > 85 | 70-85 | < 70 |
+
+**Interpretation**:
+- **pTM > 0.8**: High confidence in overall fold
+- **ipTM > 0.7**: Confident protein-protein interface
+- **pLDDT > 85**: Confident local structure
+
+**Rule**: Don't trust predictions with pTM < 0.5. Redesign or get experimental data.
+
+### Sequence Design (ProteinMPNN/LigandMPNN)
+
+| Metric | Good | Acceptable | Investigate |
+|--------|------|------------|-------------|
+| Score (negative log-likelihood) | < 1.5 | 1.5-2.5 | > 2.5 |
+| Sequence recovery | 0.3-0.5 (de novo) | 0.5-0.7 | > 0.8 (too conservative) |
+
+**Rule**: Low diversity (all sequences identical) = temperature too low. Increase to 0.2-0.3.
+
+## Common Mistakes
+
+### Wrong: Not checking prediction confidence
+```
+❌ Using predicted structure without checking pTM/pLDDT
+```
+
+```
+✅ Always check confidence in job results:
+   - pTM < 0.5 → prediction unreliable
+   - pLDDT < 50 in a region → likely disordered
+```
+
+### Wrong: Using ProteinMPNN when ligand is present
+```
+❌ Designing binding site with ProteinMPNN when ligand matters
+```
+**Why wrong**: ProteinMPNN doesn't see the ligand, may design residues that clash.
+
+```
+✅ Use LigandMPNN for ligand-aware design:
+   submit_ligandmpnn_prediction with ligand_chain specified
+```
+
+### Wrong: Temperature too low for exploration
+```
+❌ Using temperature 0.01 for initial design exploration
+```
+**Why wrong**: Generates nearly identical sequences, misses diversity.
+
+```
+✅ Temperature guide:
+   - 0.1: Production (low diversity, high quality)
+   - 0.2: Default (balanced)
+   - 0.3: Exploration (higher diversity)
+```
+
+### Wrong: Not fixing important residues
+```
+❌ Redesigning entire protein including catalytic residues
+```
+
+```
+✅ Use fixed_positions to preserve:
+   - Catalytic residues
+   - Disulfide cysteines
+   - Known functional residues
+   
+   params: {"fixed_positions": "A:1-10,A:50-55"}
+```
+
+## Tools Reference
 
 ### Structure Prediction
 
-| Tool | Description |
-|------|-------------|
-| `submit_boltz_prediction` | Boltz structure prediction |
-| `get_boltz_tool_info` | Get Boltz parameters |
-| `submit_chai_prediction` | Chai-1 prediction |
-| `get_chai_tool_info` | Get Chai parameters |
-
-### Docking
-
-| Tool | Description |
-|------|-------------|
-| `submit_geodock_prediction` | GeoDock protein-ligand docking |
-| `get_geodock_tool_info` | Get GeoDock parameters |
-
-### Sequence Design
-
-| Tool | Description |
-|------|-------------|
-| `submit_proteinmpnn_prediction` | ProteinMPNN design |
-| `get_proteinmpnn_tool_info` | Get parameters |
-| `submit_ligandmpnn_prediction` | LigandMPNN design |
-| `submit_ligandmpnn_scoring` | Score sequences |
-| `get_ligandmpnn_tool_info` | Get parameters |
-| `submit_thermompnn_prediction` | ThermoMPNN stability design |
-| `get_thermompnn_tool_info` | Get parameters |
-
-### Text-to-Protein
-
-| Tool | Description |
-|------|-------------|
-| `submit_pinal_text_design` | Text-guided design |
-| `submit_pinal_structure_design` | Structure-guided design |
-| `get_pinal_tool_info` | Get parameters |
-
-### Job Management
-
-| Tool | Description |
-|------|-------------|
-| `fetch_job_status` | Check job status |
-| `fetch_user_jobs` | List your jobs |
-| `fetch_chat_jobs` | List chat jobs |
-
-## Examples
-
-### Boltz Prediction
-
+**submit_boltz_prediction** - Predict structure with Boltz
 ```bash
-# Get info first
+# Get tool info first (always do this!)
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_boltz_tool_info" \
   -F 'params={}'
 
-# Submit
+# Submit prediction
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_boltz_prediction" \
   -F 'params={
-    "sequences": [{"type": "protein", "sequence": "MVLSPADKTNVK..."}],
+    "sequences": [
+      {"type": "protein", "sequence": "MVLSPADKTNVK..."}
+    ],
     "recycling_steps": 3,
     "sampling_steps": 200
   }'
 ```
 
-### Chai Prediction
-
+**submit_chai_prediction** - Predict with Chai (supports ligands)
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
@@ -88,22 +146,22 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   }'
 ```
 
-### ProteinMPNN Design
+### Sequence Design
 
+**submit_proteinmpnn_prediction** - Design sequences for backbone
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_proteinmpnn_prediction" \
   -F 'params={
-    "pdb_path": "path/to/structure.pdb",
+    "pdb_path": "path/to/backbone.pdb",
     "num_sequences": 8,
     "temperature": 0.1,
-    "fixed_positions": "A:1-10,A:50-60"
+    "fixed_positions": "A:1-10"
   }'
 ```
 
-### LigandMPNN Design
-
+**submit_ligandmpnn_prediction** - Ligand-aware design
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
@@ -111,135 +169,110 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -F 'params={
     "pdb_path": "path/to/complex.pdb",
     "num_sequences": 8,
+    "temperature": 0.1,
     "design_chains": ["A"],
     "ligand_chain": "X"
   }'
 ```
 
-### Check Job Status
+### Job Management
+
+All prediction tools return a `job_id`. Poll for completion:
 
 ```bash
-# Quick status check
-curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/job_abc123/status" \
+# Check status
+curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+  -H "X-API-Key: $OPENBIO_API_KEY"
+
+# Get results with download URLs
+curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
-Response:
-```json
-{
-  "success": true,
-  "job_id": "job_abc123",
-  "status": "completed"
-}
+Download files using `output_files_signed_urls` (valid 1 hour).
+
+## Common Workflows
+
+### Workflow 1: Validate designed binder
+
+```
+1. Design binder sequences
+   → submit_proteinmpnn_prediction (8-16 sequences)
+   
+2. Predict complex structure for each
+   → submit_boltz_prediction with binder + target
+   
+3. Filter by confidence
+   → Keep predictions with ipTM > 0.6
+   
+4. Analyze interfaces
+   → Check pLDDT at interface residues
+   → Discard if interface pLDDT < 70
 ```
 
-### Download Results After Completion
+### Workflow 2: Design enzyme with bound substrate
 
-Once status is `completed`, get full job details with **signed download URLs**:
-
-```bash
-curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/job_abc123" \
-  -H "X-API-Key: $OPENBIO_API_KEY"
+```
+1. Start with enzyme-substrate complex PDB
+   
+2. Design with ligand awareness
+   → submit_ligandmpnn_prediction
+   → Set design_chains to enzyme, ligand_chain to substrate
+   
+3. Validate designs
+   → submit_chai_prediction for each designed sequence
+   → Include substrate SMILES
+   
+4. Rank by:
+   → ipTM (binding confidence)
+   → pLDDT at active site
 ```
 
-Response:
-```json
-{
-  "success": true,
-  "job": {
-    "job_id": "job_abc123",
-    "status": "completed",
-    "tool_name": "submit_boltz_prediction",
-    "output_files": {
-      "structure": "outputs/boltz/job_abc123/prediction.pdb",
-      "confidence": "outputs/boltz/job_abc123/confidence.json"
-    }
-  },
-  "output_files_signed_urls": {
-    "structure": "https://s3.amazonaws.com/...signed-url...",
-    "confidence": "https://s3.amazonaws.com/...signed-url..."
-  }
-}
+### Workflow 3: Improve thermostability
+
 ```
-
-**Download the files** using signed URLs (valid for 1 hour):
-
-```bash
-# Download predicted structure
-curl -o prediction.pdb "https://s3.amazonaws.com/...signed-url..."
-
-# Download confidence scores  
-curl -o confidence.json "https://s3.amazonaws.com/...signed-url..."
-```
-
-### List All Jobs
-
-```bash
-curl -X GET "https://openbio-api.fly.dev/api/v1/jobs?status=completed&tool=submit_boltz_prediction" \
-  -H "X-API-Key: $OPENBIO_API_KEY"
+1. Get starting structure
+   
+2. Design thermostable variants
+   → submit_thermompnn_prediction
+   → Set target_temperature higher than current Tm
+   
+3. Validate fold is maintained
+   → submit_boltz_prediction for each variant
+   → Confirm pTM > 0.8
 ```
 
 ## Tool Comparison
 
-| Tool | Input | Output | Use Case |
+| Tool | Input | Output | Best For |
 |------|-------|--------|----------|
-| Boltz | Sequences | Structure | General prediction |
-| Chai | Seq + ligand | Complex | Protein-ligand |
-| GeoDock | Structure + ligand | Poses | Docking |
-| ProteinMPNN | Backbone | Sequences | Fixed-backbone design |
-| LigandMPNN | Complex | Sequences | Ligand-aware design |
-| ThermoMPNN | Structure | Sequences | Thermostability |
-| Pinal | Text/structure | Seq + struct | De novo design |
+| Boltz | Sequences | Structure | General prediction, complexes |
+| Chai | Sequences + ligand SMILES | Structure | Protein-ligand complexes |
+| GeoDock | Structure + ligand | Docked poses | Binding pose prediction |
+| ProteinMPNN | Backbone PDB | Sequences | Fixed-backbone design |
+| LigandMPNN | Complex PDB | Sequences | Ligand-aware design |
+| ThermoMPNN | Structure | Sequences | Thermostability optimization |
+| Pinal | Text or structure | Sequences + structures | De novo design from description |
 
-## Job Status Values
+## Troubleshooting
 
-| Status | Meaning |
-|--------|---------|
-| `submitted` | Queued |
-| `running` | Processing |
-| `completed` | Finished |
-| `failed` | Error |
-| `cancelled` | Cancelled |
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| pTM < 0.5 | Unreliable prediction | Sequence may not fold well, redesign |
+| ipTM < 0.4 | Interface not confident | Complex may not form, check sequences |
+| All sequences identical | Temperature too low | Increase to 0.2-0.3 |
+| Job stuck "running" | Large complex | Wait longer, or simplify input |
+| OOM error | Sequence too long | Split into domains |
 
-## Complete Workflow Example
+## Typical Performance
 
-```bash
-# 1. Get tool info
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "X-API-Key: $OPENBIO_API_KEY" \
-  -F "tool_name=get_boltz_tool_info" -F 'params={}'
+| Job Type | Time | Notes |
+|----------|------|-------|
+| Boltz (single chain) | 1-3 min | ~300 residues |
+| Boltz (complex) | 3-10 min | Depends on size |
+| ProteinMPNN (8 seqs) | 30-60 sec | Fast |
+| LigandMPNN (8 seqs) | 1-2 min | Slightly slower |
 
-# 2. Submit prediction job
-RESPONSE=$(curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "X-API-Key: $OPENBIO_API_KEY" \
-  -F "tool_name=submit_boltz_prediction" \
-  -F 'params={"sequences": [{"type": "protein", "sequence": "MVLSPADKTNVK..."}]}')
-JOB_ID=$(echo $RESPONSE | jq -r '.data.job_id')
+---
 
-# 3. Poll for completion (with backoff)
-while true; do
-  STATUS=$(curl -s "https://openbio-api.fly.dev/api/v1/jobs/$JOB_ID/status" \
-    -H "X-API-Key: $OPENBIO_API_KEY" | jq -r '.status')
-  
-  if [ "$STATUS" = "completed" ]; then break; fi
-  if [ "$STATUS" = "failed" ]; then echo "Job failed"; exit 1; fi
-  
-  sleep 30  # Wait 30 seconds between checks
-done
-
-# 4. Get download URLs
-RESULT=$(curl -s "https://openbio-api.fly.dev/api/v1/jobs/$JOB_ID" \
-  -H "X-API-Key: $OPENBIO_API_KEY")
-
-# 5. Download output files
-STRUCTURE_URL=$(echo $RESULT | jq -r '.output_files_signed_urls.structure')
-curl -o prediction.pdb "$STRUCTURE_URL"
-```
-
-## Tips
-
-- **Always** use info tool first to understand parameters
-- `temperature`: Lower = more conservative (0.1 typical)
-- Use `fixed_positions` to preserve important residues
-- Poll with exponential backoff (start 10s, max 60s)
-- Signed URLs expire after 1 hour - regenerate if needed
+**Important**: Always use the `get_*_tool_info` tool first to understand parameters and limits for each prediction tool.

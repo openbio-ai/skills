@@ -1,56 +1,134 @@
 # Cheminformatics Tools
 
-Molecular analysis: RDKit, PubChem, ChEMBL, SA Score.
+Analyze small molecules using RDKit, PubChem, and ChEMBL via OpenBio API.
 
-## Tools
+## When to Use
 
-### RDKit
+Use cheminformatics tools when:
+1. Checking if a compound is drug-like
+2. Calculating molecular properties (MW, LogP, etc.)
+3. Finding similar compounds in databases
+4. Checking for problematic structural features (PAINS)
+5. Estimating synthetic accessibility
 
-| Tool | Description |
-|------|-------------|
-| `calculate_molecular_properties` | MW, LogP, HBD, HBA, TPSA |
-| `validate_and_canonicalize_smiles` | Validate/canonicalize SMILES |
-| `calculate_fingerprint_similarity` | Tanimoto similarity |
-| `search_substructure` | Substructure search |
-| `calculate_molecular_descriptors` | 200+ descriptors |
-| `standardize_molecule` | Neutralize, tautomerize |
-| `generate_conformers` | Generate 3D conformers |
-| `cluster_molecules` | Cluster by similarity |
-| `search_similar_molecules` | Find similar molecules |
-| `calculate_dipole_moment` | Calculate dipole |
+## Decision Tree
 
-### SA Score
+```
+What do you need?
+│
+├─ Check drug-likeness?
+│   └─ calculate_molecular_properties → check Lipinski rules
+│
+├─ Find compound info?
+│   ├─ Have name → search_pubchem or search_chembl_by_name
+│   ├─ Have SMILES → chembl_similarity_search_by_smiles
+│   └─ Have ChEMBL ID → get_chembl_molecule_by_id
+│
+├─ Check compound quality?
+│   ├─ PAINS/promiscuous? → get_structural_alerts_from_smiles
+│   └─ Synthesizable? → calculate_sa_score
+│
+├─ Compare compounds?
+│   └─ calculate_fingerprint_similarity (Tanimoto)
+│
+└─ Validate SMILES?
+    └─ validate_and_canonicalize_smiles
+```
 
-| Tool | Description |
-|------|-------------|
-| `calculate_sa_score` | Synthetic Accessibility (1=easy, 10=hard) |
-| `calculate_sa_score_batch` | Batch SA calculation |
+## Quality Thresholds
 
-### PubChem
+### Drug-Likeness (Lipinski's Rule of 5)
 
-| Tool | Description |
-|------|-------------|
-| `search_pubchem` | Search by name/SMILES |
-| `get_pubchem_compound_by_cid` | Get compound by CID |
+| Property | Rule | Oral Drug Range |
+|----------|------|-----------------|
+| Molecular Weight | ≤ 500 Da | 200-500 Da |
+| LogP | ≤ 5 | 1-3 (optimal) |
+| H-bond Donors | ≤ 5 | 0-3 |
+| H-bond Acceptors | ≤ 10 | 2-7 |
 
-### ChEMBL
+**Rule**: 1 violation acceptable, 2+ = poor oral bioavailability likely.
 
-| Tool | Description |
-|------|-------------|
-| `search_chembl_by_name` | Search by name |
-| `search_chembl_by_synonym` | Search by synonym |
-| `get_chembl_molecule_by_id` | Get by ChEMBL ID |
-| `get_SVG_by_chembl_id` | Get structure image |
-| `get_chembl_molecule_by_inchi_key` | Get by InChI Key |
-| `chembl_similarity_search_by_smiles` | Similarity search |
-| `chembl_similarity_search_by_id` | Similarity by ID |
-| `get_chembl_descriptors_from_smiles` | Calculate descriptors |
-| `get_structural_alerts_from_smiles` | Check PAINS alerts |
+### Beyond Rule of 5 (for complex targets)
 
-## Examples
+| Property | Extended Range | Notes |
+|----------|---------------|-------|
+| MW | ≤ 700 Da | PPI inhibitors, macrocycles |
+| TPSA | < 140 Å² | CNS drugs need < 90 Å² |
+| Rotatable bonds | < 10 | Rigidity helps binding |
 
-### Calculate Properties
+### Synthetic Accessibility Score
 
+| SA Score | Interpretation | Action |
+|----------|----------------|--------|
+| 1-3 | Easy to synthesize | Proceed |
+| 3-5 | Moderate difficulty | Consider alternatives |
+| 5-7 | Difficult | May need custom synthesis |
+| 7-10 | Very difficult | Redesign compound |
+
+### Similarity Thresholds
+
+| Tanimoto | Interpretation |
+|----------|----------------|
+| > 0.85 | Very similar (likely same scaffold) |
+| 0.7-0.85 | Similar (may share activity) |
+| 0.5-0.7 | Moderate similarity |
+| < 0.5 | Different compounds |
+
+## Common Mistakes
+
+### Wrong: Ignoring PAINS alerts
+```
+❌ Proceeding with compound showing PAINS alert
+```
+**Why wrong**: PAINS compounds often show false positive activity in assays.
+
+```
+✅ Always check: get_structural_alerts_from_smiles
+   If alerts found → investigate mechanism or choose different scaffold
+```
+
+### Wrong: Trusting LogP without context
+```
+❌ "LogP is 4.5, within Rule of 5, so it's fine"
+```
+**Why wrong**: High LogP causes solubility issues, metabolic instability.
+
+```
+✅ Optimal LogP: 1-3
+   LogP > 4: Expect solubility issues
+   LogP > 5: High metabolic clearance likely
+```
+
+### Wrong: Not canonicalizing SMILES
+```
+❌ Comparing SMILES strings directly
+   "c1ccccc1" vs "C1=CC=CC=C1" → appear different
+```
+
+```
+✅ Always canonicalize first:
+   validate_and_canonicalize_smiles
+   Then compare canonical forms
+```
+
+### Wrong: Using MW as only filter
+```
+❌ Rejecting 550 Da compound automatically
+```
+**Why wrong**: Natural products, PPI inhibitors routinely exceed 500 Da.
+
+```
+✅ Consider target class:
+   - Standard targets: Lipinski rules
+   - PPIs, macrocycles: Extended rules (bRo5)
+   - CNS: Stricter (MW < 400, TPSA < 90)
+```
+
+## Tools Reference
+
+### Property Calculation
+
+**calculate_molecular_properties** - Get drug-like properties
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
@@ -58,26 +136,9 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -F 'params={"smiles": "CC(=O)Oc1ccccc1C(=O)O"}'
 ```
 
-### Validate SMILES
+Returns: MW, LogP, TPSA, HBD, HBA, rotatable bonds, etc.
 
-```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "X-API-Key: $OPENBIO_API_KEY" \
-  -F "tool_name=validate_and_canonicalize_smiles" \
-  -F 'params={"smiles": "c1ccccc1"}'
-```
-
-### Similarity Search
-
-```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "X-API-Key: $OPENBIO_API_KEY" \
-  -F "tool_name=chembl_similarity_search_by_smiles" \
-  -F 'params={"smiles": "CC(=O)Oc1ccccc1C(=O)O", "similarity": 70}'
-```
-
-### SA Score
-
+**calculate_sa_score** - Synthetic accessibility
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
@@ -85,8 +146,9 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -F 'params={"smiles": "CC(=O)Oc1ccccc1C(=O)O"}'
 ```
 
-### PAINS Alerts
+### Quality Checks
 
+**get_structural_alerts_from_smiles** - Check for PAINS/alerts
 ```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
@@ -94,37 +156,131 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -F 'params={"smiles": "CC(=O)Oc1ccccc1C(=O)O"}'
 ```
 
-### Search Databases
-
+**validate_and_canonicalize_smiles** - Validate and standardize
 ```bash
-# PubChem
+curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
+  -F "tool_name=validate_and_canonicalize_smiles" \
+  -F 'params={"smiles": "c1ccccc1"}'
+```
+
+### Database Search
+
+**search_pubchem** - Search by name
+```bash
 curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_pubchem" \
   -F 'params={"query": "aspirin"}'
-
-# ChEMBL
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "X-API-Key: $OPENBIO_API_KEY" \
-  -F "tool_name=search_chembl_by_name" \
-  -F 'params={"compound_name": "aspirin"}'
 ```
 
-## Drug-likeness (Lipinski)
+**chembl_similarity_search_by_smiles** - Find similar compounds
+```bash
+curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
+  -F "tool_name=chembl_similarity_search_by_smiles" \
+  -F 'params={"smiles": "CC(=O)Oc1ccccc1C(=O)O", "similarity": 70}'
+```
 
-| Property | Range |
-|----------|-------|
-| MW | < 500 Da |
-| LogP | -0.4 to 5.6 |
-| HBD | ≤ 5 |
-| HBA | ≤ 10 |
-| TPSA | < 140 Å² |
-| RotBonds | < 10 |
-| SA Score | 1 (easy) - 10 (hard) |
+**Tip**: similarity parameter is percentage (70 = Tanimoto ≥ 0.7)
 
-## SMILES Tips
+### Similarity Calculation
 
-- Atoms: C, N, O, S, P, F, Cl, Br, I (lowercase = aromatic)
-- Bonds: `-` single, `=` double, `#` triple
-- Rings: Numbers (c1ccccc1 = benzene)
-- Branches: Parentheses (CC(C)C = isobutane)
+**calculate_fingerprint_similarity** - Compare two molecules
+```bash
+curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
+  -F "tool_name=calculate_fingerprint_similarity" \
+  -F 'params={"smiles1": "CC(=O)Oc1ccccc1C(=O)O", "smiles2": "CC(=O)Nc1ccc(O)cc1"}'
+```
+
+## Common Workflows
+
+### Workflow 1: Evaluate hit compound
+
+```
+1. Validate SMILES
+   → validate_and_canonicalize_smiles
+   
+2. Check drug-likeness
+   → calculate_molecular_properties
+   → Verify Lipinski compliance
+   
+3. Check for PAINS
+   → get_structural_alerts_from_smiles
+   → If alerts: investigate or deprioritize
+   
+4. Assess synthesizability
+   → calculate_sa_score
+   → SA > 6: consider analogs
+   
+5. Find similar known compounds
+   → chembl_similarity_search_by_smiles
+   → Check if similar compounds have known issues
+```
+
+### Workflow 2: Compare compound series
+
+```
+1. Canonicalize all SMILES
+   → validate_and_canonicalize_smiles for each
+   
+2. Calculate properties for all
+   → calculate_molecular_properties for each
+   
+3. Calculate pairwise similarity
+   → calculate_fingerprint_similarity
+   
+4. Identify property trends
+   → Compare MW, LogP progression
+   → Flag outliers
+```
+
+### Workflow 3: CNS drug assessment
+
+```
+Stricter criteria for blood-brain barrier:
+
+1. Check properties:
+   - MW < 400 Da (ideally < 350)
+   - LogP: 1-3 (not too polar, not too lipophilic)
+   - TPSA < 90 Å² (must cross BBB)
+   - HBD ≤ 3
+   - No PAINS alerts
+   
+2. Red flags:
+   - TPSA > 90 → won't cross BBB
+   - LogP < 0 → too polar
+   - LogP > 4 → P-gp efflux substrate likely
+```
+
+## SMILES Quick Reference
+
+| Symbol | Meaning |
+|--------|---------|
+| C, N, O, S | Atoms (uppercase = aliphatic) |
+| c, n, o, s | Aromatic atoms (lowercase) |
+| = | Double bond |
+| # | Triple bond |
+| () | Branch |
+| 1,2,3... | Ring closure |
+| [NH2] | Explicit H atoms |
+| @ | Stereochemistry |
+
+Examples:
+- Benzene: `c1ccccc1`
+- Aspirin: `CC(=O)Oc1ccccc1C(=O)O`
+- Caffeine: `Cn1cnc2c1c(=O)n(c(=O)n2C)C`
+
+## Troubleshooting
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| SMILES invalid | Syntax error | Check ring closures, branches balanced |
+| Properties differ from literature | Different salt form | Use neutral form for comparison |
+| No ChEMBL results | Novel compound | Expected for new scaffolds |
+| High SA score | Complex structure | Consider simpler analogs |
+
+---
+
+**Tip**: Always start with `validate_and_canonicalize_smiles` to catch SMILES errors early.
