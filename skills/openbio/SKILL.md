@@ -77,6 +77,14 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
   -F 'params={"query": "CRISPR", "max_results": 5}'
 ```
 
+### Get Job Results with Download URLs
+```bash
+# For long-running jobs (submit_* tools), get output files:
+curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
+  -H "Authorization: Bearer $OPENBIO_API_KEY"
+# Returns signed URLs in output_files_signed_urls (valid 1 hour)
+```
+
 ## Tool Categories
 
 | Category | Tools | Description |

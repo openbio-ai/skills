@@ -119,10 +119,64 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 ### Check Job Status
 
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
-  -H "Authorization: Bearer $OPENBIO_API_KEY" \
-  -F "tool_name=fetch_job_status" \
-  -F 'params={"job_id": "job_abc123"}'
+# Quick status check
+curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/job_abc123/status" \
+  -H "Authorization: Bearer $OPENBIO_API_KEY"
+```
+
+Response:
+```json
+{
+  "success": true,
+  "job_id": "job_abc123",
+  "status": "completed"
+}
+```
+
+### Download Results After Completion
+
+Once status is `completed`, get full job details with **signed download URLs**:
+
+```bash
+curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/job_abc123" \
+  -H "Authorization: Bearer $OPENBIO_API_KEY"
+```
+
+Response:
+```json
+{
+  "success": true,
+  "job": {
+    "job_id": "job_abc123",
+    "status": "completed",
+    "tool_name": "submit_boltz_prediction",
+    "output_files": {
+      "structure": "outputs/boltz/job_abc123/prediction.pdb",
+      "confidence": "outputs/boltz/job_abc123/confidence.json"
+    }
+  },
+  "output_files_signed_urls": {
+    "structure": "https://s3.amazonaws.com/...signed-url...",
+    "confidence": "https://s3.amazonaws.com/...signed-url..."
+  }
+}
+```
+
+**Download the files** using signed URLs (valid for 1 hour):
+
+```bash
+# Download predicted structure
+curl -o prediction.pdb "https://s3.amazonaws.com/...signed-url..."
+
+# Download confidence scores  
+curl -o confidence.json "https://s3.amazonaws.com/...signed-url..."
+```
+
+### List All Jobs
+
+```bash
+curl -X GET "https://openbio-api.fly.dev/api/v1/jobs?status=completed&tool=submit_boltz_prediction" \
+  -H "Authorization: Bearer $OPENBIO_API_KEY"
 ```
 
 ## Tool Comparison
@@ -147,9 +201,45 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 | `failed` | Error |
 | `cancelled` | Cancelled |
 
+## Complete Workflow Example
+
+```bash
+# 1. Get tool info
+curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -F "tool_name=get_boltz_tool_info" -F 'params={}'
+
+# 2. Submit prediction job
+RESPONSE=$(curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+  -H "Authorization: Bearer $OPENBIO_API_KEY" \
+  -F "tool_name=submit_boltz_prediction" \
+  -F 'params={"sequences": [{"type": "protein", "sequence": "MVLSPADKTNVK..."}]}')
+JOB_ID=$(echo $RESPONSE | jq -r '.data.job_id')
+
+# 3. Poll for completion (with backoff)
+while true; do
+  STATUS=$(curl -s "https://openbio-api.fly.dev/api/v1/jobs/$JOB_ID/status" \
+    -H "Authorization: Bearer $OPENBIO_API_KEY" | jq -r '.status')
+  
+  if [ "$STATUS" = "completed" ]; then break; fi
+  if [ "$STATUS" = "failed" ]; then echo "Job failed"; exit 1; fi
+  
+  sleep 30  # Wait 30 seconds between checks
+done
+
+# 4. Get download URLs
+RESULT=$(curl -s "https://openbio-api.fly.dev/api/v1/jobs/$JOB_ID" \
+  -H "Authorization: Bearer $OPENBIO_API_KEY")
+
+# 5. Download output files
+STRUCTURE_URL=$(echo $RESULT | jq -r '.output_files_signed_urls.structure')
+curl -o prediction.pdb "$STRUCTURE_URL"
+```
+
 ## Tips
 
 - **Always** use info tool first to understand parameters
 - `temperature`: Lower = more conservative (0.1 typical)
 - Use `fixed_positions` to preserve important residues
-- Poll with exponential backoff
+- Poll with exponential backoff (start 10s, max 60s)
+- Signed URLs expire after 1 hour - regenerate if needed

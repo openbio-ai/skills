@@ -138,11 +138,65 @@ Response:
 }
 ```
 
-### Check Job Status
+### Check Job Status (Quick)
 
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
   -H "Authorization: Bearer $OPENBIO_API_KEY"
+```
+
+Response:
+```json
+{
+  "success": true,
+  "job_id": "job_abc123",
+  "status": "completed",
+  "error_message": null
+}
+```
+
+### Get Job Details with Download URLs
+
+When a job completes, retrieve full details including **signed URLs to download output files**:
+
+```bash
+curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
+  -H "Authorization: Bearer $OPENBIO_API_KEY"
+```
+
+Response:
+```json
+{
+  "success": true,
+  "job": {
+    "job_id": "job_abc123",
+    "status": "completed",
+    "tool_name": "submit_boltz_prediction",
+    "output_files": {
+      "structure": "outputs/boltz/job_abc123/prediction.pdb",
+      "confidence": "outputs/boltz/job_abc123/confidence.json"
+    },
+    "submitted_at": "2024-01-15T10:30:00Z",
+    "completed_at": "2024-01-15T10:35:00Z"
+  },
+  "input_files_signed_urls": {
+    "input_fasta": "https://s3.amazonaws.com/...signed-url..."
+  },
+  "output_files_signed_urls": {
+    "structure": "https://s3.amazonaws.com/...signed-url...",
+    "confidence": "https://s3.amazonaws.com/...signed-url..."
+  }
+}
+```
+
+**Download files** using the signed URLs (valid for 1 hour):
+
+```bash
+# Download structure file
+curl -o prediction.pdb "https://s3.amazonaws.com/...signed-url..."
+
+# Download confidence scores
+curl -o confidence.json "https://s3.amazonaws.com/...signed-url..."
 ```
 
 ### List Your Jobs
@@ -150,6 +204,26 @@ curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
 ```bash
 curl -X GET "https://openbio-api.fly.dev/api/v1/jobs" \
   -H "Authorization: Bearer $OPENBIO_API_KEY"
+```
+
+Query parameters:
+- `limit`: Max results (default: 50, max: 100)
+- `offset`: Pagination offset
+- `status`: Filter by status (submitted, running, completed, failed)
+- `tool`: Filter by tool name
+
+Response:
+```json
+{
+  "success": true,
+  "jobs": [...],
+  "total_count": 42,
+  "pagination": {
+    "limit": 50,
+    "offset": 0,
+    "has_more": false
+  }
+}
 ```
 
 ## Error Handling
