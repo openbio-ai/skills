@@ -120,17 +120,35 @@ See individual rule files for detailed thresholds.
 
 Read these for domain-specific knowledge:
 
+### Core API
+| File | Description |
+|------|-------------|
+| [rules/api.md](rules/api.md) | Core endpoints, authentication, job management |
+
+### Data Access Tools
 | File | Tools Covered |
 |------|---------------|
-| [rules/api.md](rules/api.md) | Core endpoints, job management |
 | [rules/protein-structure.md](rules/protein-structure.md) | PDB, PDBe, AlphaFold, UniProt |
 | [rules/literature.md](rules/literature.md) | PubMed, arXiv, bioRxiv, OpenAlex |
 | [rules/genomics.md](rules/genomics.md) | Ensembl, ENA, Gene, GWAS, GEO |
 | [rules/cheminformatics.md](rules/cheminformatics.md) | RDKit, PubChem, ChEMBL |
 | [rules/molecular-biology.md](rules/molecular-biology.md) | Primers, PCR, restriction, assembly |
-| [rules/structure-prediction.md](rules/structure-prediction.md) | Boltz, Chai, ProteinMPNN, etc. |
 | [rules/pathway-analysis.md](rules/pathway-analysis.md) | KEGG, Reactome, STRING |
 | [rules/clinical-data.md](rules/clinical-data.md) | ClinicalTrials, ClinVar, FDA |
+
+### ML Prediction Tools (Detailed)
+| File | Tool | Use Case |
+|------|------|----------|
+| [rules/structure-prediction.md](rules/structure-prediction.md) | **Index** | Decision tree for all prediction tools |
+| [rules/boltz.md](rules/boltz.md) | Boltz-2 | Structure + binding affinity |
+| [rules/chai.md](rules/chai.md) | Chai-1 | Multi-modal (protein+ligand+RNA+glycan) |
+| [rules/simplefold.md](rules/simplefold.md) | SimpleFold | Quick single-protein folding |
+| [rules/proteinmpnn.md](rules/proteinmpnn.md) | ProteinMPNN | Fixed-backbone sequence design |
+| [rules/ligandmpnn.md](rules/ligandmpnn.md) | LigandMPNN | Ligand-aware sequence design |
+| [rules/thermompnn.md](rules/thermompnn.md) | ThermoMPNN | Stability (ΔΔG) prediction |
+| [rules/geodock.md](rules/geodock.md) | GeoDock | Protein-protein docking |
+| [rules/pinal.md](rules/pinal.md) | Pinal | De novo design from text |
+| [rules/boltzgen.md](rules/boltzgen.md) | BoltzGen | End-to-end binder design |
 
 ## Tool Categories Summary
 
