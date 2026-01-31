@@ -10,14 +10,14 @@ All requests require `OPENBIO_API_KEY` in the `X-API-Key` header:
 -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
-**Base URL**: `https://openbio-api.fly.dev/`
+**Base URL**: `https://openbio.fly.dev/`
 
 ## Critical: Always Check Tool Schema
 
 Before invoking ANY tool, get its schema:
 
 ```bash
-curl -X GET "https://openbio-api.fly.dev/api/v1/tools/{tool_name}" \
+curl -X GET "https://openbio.fly.dev/api/v1/tools/{tool_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -31,7 +31,7 @@ curl -X GET "https://openbio-api.fly.dev/api/v1/tools/{tool_name}" \
 ### List All Tools
 
 ```bash
-curl -X GET "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X GET "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -56,21 +56,21 @@ Response (truncated):
 Don't know which tool to use? Search:
 
 ```bash
-curl -X GET "https://openbio-api.fly.dev/api/v1/tools/search?q=protein+structure" \
+curl -X GET "https://openbio.fly.dev/api/v1/tools/search?q=protein+structure" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 ### List Categories
 
 ```bash
-curl -X GET "https://openbio-api.fly.dev/api/v1/tools/categories" \
+curl -X GET "https://openbio.fly.dev/api/v1/tools/categories" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 ### Get Tool Schema
 
 ```bash
-curl -X GET "https://openbio-api.fly.dev/api/v1/tools/{tool_name}" \
+curl -X GET "https://openbio.fly.dev/api/v1/tools/{tool_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -93,7 +93,7 @@ Response:
 ### Invoke a Tool
 
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -H "Content-Type: multipart/form-data" \
   -F "tool_name=search_pubmed" \
@@ -115,7 +115,7 @@ Response:
 Some tools accept files:
 
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=analyze_pdb_file" \
   -F 'params={}' \
@@ -131,7 +131,7 @@ Tools prefixed with `submit_` are long-running (predictions, large analyses).
 ### Submit Job
 
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_boltz_prediction" \
   -F 'params={"sequences": [{"type": "protein", "sequence": "MVLSPADKTNVK..."}]}'
@@ -151,7 +151,7 @@ Response:
 ### Check Job Status (Quick)
 
 ```bash
-curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -167,7 +167,7 @@ Response:
 ### Get Job Results with Download URLs
 
 ```bash
-curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
+curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -199,7 +199,7 @@ curl -o model.cif "https://s3.amazonaws.com/...signed-url..."
 ### List Your Jobs
 
 ```bash
-curl -X GET "https://openbio-api.fly.dev/api/v1/jobs?limit=10&status=completed" \
+curl -X GET "https://openbio.fly.dev/api/v1/jobs?limit=10&status=completed" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -217,7 +217,7 @@ WAIT=10
 MAX_WAIT=60
 
 while true; do
-  STATUS=$(curl -s "https://openbio-api.fly.dev/api/v1/jobs/$JOB_ID/status" \
+  STATUS=$(curl -s "https://openbio.fly.dev/api/v1/jobs/$JOB_ID/status" \
     -H "X-API-Key: $OPENBIO_API_KEY" | jq -r '.status')
   
   if [ "$STATUS" = "completed" ]; then

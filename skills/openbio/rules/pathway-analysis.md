@@ -96,7 +96,7 @@ What analysis do you need?
 
 **kegg_search** - Find pathways
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=kegg_search" \
   -F 'params={"database": "pathway", "query": "apoptosis"}'
@@ -104,7 +104,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 **kegg_get_entry** - Get pathway details
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=kegg_get_entry" \
   -F 'params={"entry_id": "hsa04210"}'
@@ -112,7 +112,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 **kegg_link_entries** - Find genes in pathway
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=kegg_link_entries" \
   -F 'params={"source": "pathway", "target": "hsa", "entry_ids": ["hsa04210"]}'
@@ -122,7 +122,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 **analyze_gene_list** - Pathway enrichment
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=analyze_gene_list" \
   -F 'params={
@@ -133,7 +133,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 **search_reactome_pathways** - Find pathways
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_reactome_pathways" \
   -F 'params={"query": "DNA repair", "species": "Homo sapiens"}'
@@ -143,7 +143,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 **get_string_network** - Get interaction network
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_string_network" \
   -F 'params={
@@ -155,7 +155,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 **analyze_string_enrichment** - GO/KEGG enrichment
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=analyze_string_enrichment" \
   -F 'params={
@@ -166,7 +166,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 **get_interaction_partners** - Find interactors
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_interaction_partners" \
   -F 'params={
@@ -178,7 +178,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 **get_string_network_image** - Visualize network
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_string_network_image" \
   -F 'params={

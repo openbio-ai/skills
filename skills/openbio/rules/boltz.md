@@ -183,7 +183,7 @@ constraints:
 
 ### Get Tool Info
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_boltz_tool_info" \
   -F 'params={}'
@@ -191,7 +191,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ### Submit Prediction
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_boltz_prediction" \
   -F 'params={
@@ -205,11 +205,11 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 ### Poll and Download
 ```bash
 # Check status
-curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
 # Get results with download URLs
-curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
+curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -273,12 +273,12 @@ curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
 
 ```bash
 # Check job completed
-curl -s "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+curl -s "https://openbio.fly.dev/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
 # Should return: "completed"
 
 # Verify output files exist
-curl -s "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
+curl -s "https://openbio.fly.dev/api/v1/jobs/{job_id}" \
   -H "X-API-Key: $OPENBIO_API_KEY" | jq '.output_files_signed_urls | keys'
 # Should list: structure files, confidence.json
 ```

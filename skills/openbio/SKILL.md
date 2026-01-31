@@ -26,21 +26,21 @@ bunx skills add https://github.com/openbio-ai/skills --skill openbio
 export OPENBIO_API_KEY=your_key_here
 ```
 
-**Base URL**: `https://openbio-api.fly.dev/`
+**Base URL**: `https://openbio.fly.dev/`
 
 ## Quick Start
 
 ```bash
 # List available tools
-curl -X GET "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X GET "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
 # Get tool schema (always do this first!)
-curl -X GET "https://openbio-api.fly.dev/api/v1/tools/{tool_name}" \
+curl -X GET "https://openbio.fly.dev/api/v1/tools/{tool_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
 # Invoke tool
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_pubmed" \
   -F 'params={"query": "CRISPR", "max_results": 5}'
@@ -89,7 +89,7 @@ What do you need?
 ### 1. Always Check Tool Schema First
 ```bash
 # Before invoking ANY tool:
-curl -X GET "https://openbio-api.fly.dev/api/v1/tools/{tool_name}" \
+curl -X GET "https://openbio.fly.dev/api/v1/tools/{tool_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 Parameter names vary (e.g., `pdb_ids` not `pdb_id`). Check schema to avoid errors.
@@ -98,11 +98,11 @@ Parameter names vary (e.g., `pdb_ids` not `pdb_id`). Check schema to avoid error
 Prediction tools return a `job_id`. Poll for completion:
 ```bash
 # Check status
-curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
 # Get results with download URLs
-curl -X GET "https://openbio-api.fly.dev/api/v1/jobs/{job_id}" \
+curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 

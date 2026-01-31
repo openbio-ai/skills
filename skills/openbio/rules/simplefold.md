@@ -74,7 +74,7 @@ SimpleFold is a protein structure prediction model developed by Apple that uses 
 
 ### Basic Prediction
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_simplefold_prediction" \
   -F 'params={
@@ -84,7 +84,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ### High Accuracy
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_simplefold_prediction" \
   -F 'params={
@@ -97,7 +97,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ### Fast Prediction
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_simplefold_prediction" \
   -F 'params={
@@ -109,7 +109,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ### Get Tool Info
 ```bash
-curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_simplefold_tool_info" \
   -F 'params={}'
@@ -203,7 +203,7 @@ curl -X POST "https://openbio-api.fly.dev/api/v1/tools" \
 
 ```bash
 # Check job completed
-curl -s "https://openbio-api.fly.dev/api/v1/jobs/{job_id}/status" \
+curl -s "https://openbio.fly.dev/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
 
 # Verify structure file exists
