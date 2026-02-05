@@ -22,6 +22,8 @@ bunx skills add https://github.com/openbio-ai/skills --skill openbio
 
 **Required**: `OPENBIO_API_KEY` environment variable.
 
+Create your API key at: http://openbio.tech/profile#apikeys
+
 ```bash
 export OPENBIO_API_KEY=your_key_here
 ```
@@ -162,6 +164,39 @@ Read these for domain-specific knowledge:
 | Structure prediction | 15+ | submit_boltz_prediction, submit_proteinmpnn_prediction |
 | Pathway analysis | 24 | analyze_gene_list, get_string_network |
 | Clinical data | 22 | search_clinical_trials, search_clinvar |
+
+## Troubleshooting: Updating the Skill
+
+Skills may become outdated as new changes are pushed. Follow these steps to update:
+
+### 1. Check for updates
+```bash
+bunx skills check
+```
+This will report if updates are available (e.g., "found 1 update available for openbio").
+
+### 2. Try automatic update
+```bash
+bunx skills update
+```
+If this succeeds, you're done. If it fails, proceed to step 3.
+
+### 3. Remove the skill
+```bash
+bunx skills remove openbio --global -y
+```
+
+### 4. Re-install from source
+```bash
+bunx skills add openbio-ai/skills --skill openbio --global --agent '*' -y
+```
+
+### 5. Verify and test
+Load the skill and test the API with your key to confirm everything works:
+```bash
+curl -X GET "https://openbio.fly.dev/api/v1/tools" \
+  -H "X-API-Key: $OPENBIO_API_KEY"
+```
 
 ## Common Mistakes
 
