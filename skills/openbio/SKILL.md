@@ -24,7 +24,7 @@ bunx skills add https://github.com/openbio-ai/skills --skill openbio
 
 **Required**: `OPENBIO_API_KEY` environment variable.
 
-Create your API key at: http://openbio.tech/profile#apikeys
+Tell the user to create their API key at: http://openbio.tech/profile#apikeys and securely store it in their environment variables.
 
 ```bash
 export OPENBIO_API_KEY=your_key_here

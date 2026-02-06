@@ -30,6 +30,8 @@ The OpenBio skill provides domain-specific knowledge for using the OpenBio API, 
 
 ## Authentication
 
+Using the OpenBio API requires an API key. You can create your API key at: http://openbio.tech/profile#apikeys and securely store it in your environment variables.
+
 All API requests require `OPENBIO_API_KEY` environment variable.
 
 ```bash
