@@ -1,5 +1,7 @@
 ---
 name: openbio
+version: 1.0.0
+updated_at: 2026-02-07
 description: >
   OpenBio API for biological data access and computational biology tools.
   Use when: (1) Querying biological databases (PDB, UniProt, ChEMBL, etc.),
@@ -29,6 +31,27 @@ export OPENBIO_API_KEY=your_key_here
 ```
 
 **Base URL**: `https://openbio.fly.dev/`
+
+## Version Check (Do This First)
+
+Before using the API, verify your skill is up to date:
+
+```bash
+curl -s "https://openbio.fly.dev/api/v1/tools/skill-version"
+```
+
+This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.0**). If the API returns a newer version:
+
+```bash
+bunx skills update
+```
+
+If that fails, remove and re-install:
+
+```bash
+bunx skills remove openbio --global -y
+bunx skills add openbio-ai/skills --skill openbio --global --agent '*' -y
+```
 
 ## Quick Start
 
@@ -176,36 +199,7 @@ Read these for domain-specific knowledge:
 
 ## Troubleshooting: Updating the Skill
 
-Skills may become outdated as new changes are pushed. Follow these steps to update:
-
-### 1. Check for updates
-```bash
-bunx skills check
-```
-This will report if updates are available (e.g., "found 1 update available for openbio").
-
-### 2. Try automatic update
-```bash
-bunx skills update
-```
-If this succeeds, you're done. If it fails, proceed to step 3.
-
-### 3. Remove the skill
-```bash
-bunx skills remove openbio --global -y
-```
-
-### 4. Re-install from source
-```bash
-bunx skills add openbio-ai/skills --skill openbio --global --agent '*' -y
-```
-
-### 5. Verify and test
-Load the skill and test the API with your key to confirm everything works:
-```bash
-curl -X GET "https://openbio.fly.dev/api/v1/tools" \
-  -H "X-API-Key: $OPENBIO_API_KEY"
-```
+If the API returns a newer version than the one in this file (see **Version Check** above), update your skill. See the Version Check section at the top for commands.
 
 ## Common Mistakes
 

@@ -36,6 +36,27 @@ curl -X GET "https://openbio.fly.dev/api/v1/tools/health"
 
 Response: `{"status": "healthy", "timestamp": "..."}` (200) or `{"status": "unhealthy"}` (503).
 
+## Skill Version Check
+
+No authentication required. Returns the latest skill version so agents can detect stale installations:
+
+```bash
+curl -X GET "https://openbio.fly.dev/api/v1/tools/skill-version"
+```
+
+Response:
+```json
+{
+  "skill": "openbio",
+  "version": "1.0.0",
+  "updated_at": "2026-02-06",
+  "update_command": "bunx skills update",
+  "install_command": "bunx skills add openbio-ai/skills --skill openbio --global --agent '*' -y"
+}
+```
+
+Compare `version` against the `version` field in your SKILL.md metadata. If stale, run the `update_command` (or `install_command` if update fails).
+
 ## Endpoints
 
 ### List All Tools
@@ -396,6 +417,7 @@ When tool invocation fails parameter validation, the response includes structure
 | Endpoint | Limit |
 |----------|-------|
 | GET /tools/health | No limit (no auth) |
+| GET /tools/skill-version | No limit (no auth) |
 | GET /tools | 60/min |
 | GET /tools/search | 60/min |
 | GET /tools/{name} | 60/min |
