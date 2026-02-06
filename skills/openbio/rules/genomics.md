@@ -30,9 +30,9 @@ What genomics data do you need?
 │   └─ vep_predict (Variant Effect Predictor)
 │
 ├─ Disease associations?
-│   ├─ GWAS hits for disease → search_gwas_associations_by_trait
-│   ├─ Variants near gene → search_gwas_variants_by_gene
-│   └─ Specific variant → search_gwas_associations_by_variant
+│   ├─ GWAS hits for disease → gwas_search_associations_by_trait
+│   ├─ Variants near gene → gwas_search_variants_by_gene
+│   └─ Specific variant → gwas_search_associations_by_variant
 │
 └─ Expression data?
     └─ search_geo_datasets → fetch_geo_summary → download_geo_series
@@ -193,19 +193,19 @@ Returns: gene impact, protein change, consequences, SIFT/PolyPhen scores.
 
 ### GWAS Catalog
 
-**search_gwas_associations_by_trait** - Find variants for disease
+**gwas_search_associations_by_trait** - Find variants for disease
 ```bash
 curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
-  -F "tool_name=search_gwas_associations_by_trait" \
+  -F "tool_name=gwas_search_associations_by_trait" \
   -F 'params={"trait": "EFO_0000384"}'
 ```
 
-**search_gwas_variants_by_gene** - Variants near a gene
+**gwas_search_variants_by_gene** - Variants near a gene
 ```bash
 curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
-  -F "tool_name=search_gwas_variants_by_gene" \
+  -F "tool_name=gwas_search_variants_by_gene" \
   -F 'params={"gene": "APOE"}'
 ```
 
@@ -239,7 +239,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
    → get_cross_references for UniProt, RefSeq links
    
 3. Find GWAS associations
-   → search_gwas_variants_by_gene
+   → gwas_search_variants_by_gene
    → Note disease associations
    
 4. Check expression patterns
@@ -261,7 +261,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
    → Check SIFT/PolyPhen for missense
    
 4. Cross-reference with GWAS
-   → search_gwas_associations_by_variant
+   → gwas_search_associations_by_variant
    → Any known associations?
 ```
 
@@ -269,7 +269,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 
 ```
 1. Get GWAS hits for disease
-   → search_gwas_associations_by_trait with EFO ID
+   → gwas_search_associations_by_trait with EFO ID
    
 2. Map variants to genes
    → Note reported genes

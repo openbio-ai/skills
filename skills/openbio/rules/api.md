@@ -67,6 +67,55 @@ curl -X GET "https://openbio.fly.dev/api/v1/tools/categories" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
+### Get Category Details
+
+```bash
+curl -X GET "https://openbio.fly.dev/api/v1/tools/categories/{category_name}" \
+  -H "X-API-Key: $OPENBIO_API_KEY"
+```
+
+Response:
+```json
+{
+  "name": "pubmed",
+  "description": "Search and retrieve PubMed literature",
+  "tools": ["fetch_abstract", "fetch_full_text", "search_pubmed", "pubmed_query_helper"]
+}
+```
+
+### Validate Parameters (Pre-flight Check)
+
+Check parameters before invoking a tool:
+
+```bash
+curl -X POST "https://openbio.fly.dev/api/v1/tools/validate" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"tool_name": "search_pubmed", "params": {"query": "CRISPR"}}'
+```
+
+Response (valid):
+```json
+{
+  "valid": true,
+  "tool_name": "search_pubmed",
+  "errors": null,
+  "schema": { ... }
+}
+```
+
+Response (invalid):
+```json
+{
+  "valid": false,
+  "tool_name": "search_pubmed",
+  "errors": [
+    {"field": "query", "type": "missing", "message": "Field required"}
+  ],
+  "schema": { ... }
+}
+```
+
 ### Get Tool Schema
 
 ```bash
@@ -240,18 +289,54 @@ done
 | 200 | Success | Process response |
 | 400 | Bad request | Check parameter format |
 | 401 | Unauthorized | Check API key |
-| 404 | Not found | Check tool name or job ID |
+| 403 | Not available via SDK | Tool exists but is not exposed via the API |
+| 404 | Not found | Check tool name or job ID (includes "did you mean?" suggestions) |
 | 429 | Rate limited | Wait and retry |
 | 500 | Server error | Retry or contact support |
 
-### Error Response Format
+### "Did You Mean?" Suggestions
+
+If you get a 404, the response includes suggestions for similar tool names:
+
+```json
+{
+  "detail": "Tool 'search_gwas_associations' not found. Did you mean: gwas_search_associations_by_trait, gwas_search_associations_by_variant, gwas_search_variants_by_gene?"
+}
+```
+
+### Validation Error Response
+
+When tool invocation fails parameter validation, the response includes structured field-level errors and the accepted parameter schema:
 
 ```json
 {
   "success": false,
   "tool_name": "search_pubmed",
   "data": null,
-  "message": "Tool execution failed: validation error..."
+  "message": "Parameter validation failed",
+  "errors": [
+    {"field": "query", "type": "missing", "message": "Field required"},
+    {"field": "max_results", "type": "less_than_equal", "message": "Input should be less than or equal to 100"}
+  ],
+  "accepted_schema": {
+    "type": "object",
+    "properties": {
+      "query": {"type": "string"},
+      "max_results": {"type": "integer", "default": 10}
+    },
+    "required": ["query"]
+  }
+}
+```
+
+### General Error Response
+
+```json
+{
+  "success": false,
+  "tool_name": "search_pubmed",
+  "data": null,
+  "message": "Tool execution failed: ..."
 }
 ```
 
@@ -261,8 +346,14 @@ done
 |----------|-------|
 | GET /tools | 60/min |
 | GET /tools/search | 60/min |
+| GET /tools/{name} | 60/min |
+| GET /tools/categories | 60/min |
+| GET /tools/categories/{name} | 60/min |
+| POST /tools/validate | 60/min |
 | POST /tools | 30/min |
 | GET /jobs | 10/min |
+| GET /jobs/{id}/status | 60/min |
+| GET /jobs/{id} | 10/min |
 
 ## Common Patterns
 
@@ -281,7 +372,21 @@ curl -X POST "...api/v1/tools" -H "X-API-Key: $KEY" \
   -F 'params={"pdb_ids": ["1MBO"]}'
 ```
 
-### Pattern 2: Submit → Poll → Download
+### Pattern 2: Validate → Invoke
+
+```bash
+# 1. Validate parameters first
+curl -s -X POST "...api/v1/tools/validate" -H "X-API-Key: $KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"tool_name": "fetch_pdb_metadata", "params": {"pdb_ids": ["1MBO"]}}'
+
+# 2. If valid, invoke
+curl -X POST "...api/v1/tools" -H "X-API-Key: $KEY" \
+  -F "tool_name=fetch_pdb_metadata" \
+  -F 'params={"pdb_ids": ["1MBO"]}'
+```
+
+### Pattern 3: Submit → Poll → Download
 
 ```bash
 # 1. Submit job

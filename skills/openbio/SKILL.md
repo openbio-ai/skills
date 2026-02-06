@@ -41,6 +41,12 @@ curl -X GET "https://openbio.fly.dev/api/v1/tools" \
 curl -X GET "https://openbio.fly.dev/api/v1/tools/{tool_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
+# Validate parameters before invoking (optional)
+curl -X POST "https://openbio.fly.dev/api/v1/tools/validate" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"tool_name": "search_pubmed", "params": {"query": "CRISPR", "max_results": 5}}'
+
 # Invoke tool
 curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
@@ -158,12 +164,12 @@ Read these for domain-specific knowledge:
 |----------|-------|----------|
 | Protein structure | 23 | fetch_pdb_metadata, get_alphafold_prediction |
 | Literature | 14 | search_pubmed, arxiv_search, biorxiv_search_keywords |
-| Genomics | 27 | lookup_gene, vep_predict, search_gwas_associations_by_trait |
+| Genomics | 27 | lookup_gene, vep_predict, gwas_search_associations_by_trait |
 | Cheminformatics | 20+ | calculate_molecular_properties, chembl_similarity_search |
 | Molecular biology | 15 | design_primers, restriction_digest, assemble_gibson |
 | Structure prediction | 15+ | submit_boltz_prediction, submit_proteinmpnn_prediction |
 | Pathway analysis | 24 | analyze_gene_list, get_string_network |
-| Clinical data | 22 | search_clinical_trials, search_clinvar |
+| Clinical data | 22 | search_clinical_trials, clinvar_search |
 
 ## Troubleshooting: Updating the Skill
 
@@ -200,10 +206,11 @@ curl -X GET "https://openbio.fly.dev/api/v1/tools" \
 
 ## Common Mistakes
 
-1. **Not checking schemas** → Parameter errors
+1. **Not checking schemas** → Parameter errors. Use `POST /api/v1/tools/validate` to pre-check params.
 2. **Ignoring quality metrics** → Using unreliable data
 3. **Wrong tool for task** → Check decision trees in rule files
 4. **Not polling jobs** → Missing prediction results
+5. **Wrong tool name** → 404 responses include "Did you mean?" suggestions with similar tool names
 
 ---
 

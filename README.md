@@ -17,7 +17,7 @@ This installs the OpenBio skill to all detected agents (Claude Code, Cursor, Cli
 
 ## What's Included
 
-The OpenBio skill provides domain-specific knowledge for using the OpenBio API, which offers 60+ biological tools:
+The OpenBio skill provides domain-specific knowledge for using the OpenBio API, which offers 150+ biological tools:
 
 - **Protein Structures** - PDB, PDBe, AlphaFold, UniProt
 - **Literature Search** - PubMed, arXiv, bioRxiv, OpenAlex

@@ -22,8 +22,8 @@ What clinical information do you need?
 │   └─ Specific trial → get_clinical_trial_details with NCT ID
 │
 ├─ Variant pathogenicity?
-│   ├─ By gene → search_clinvar with "GENE[gene]"
-│   ├─ By position → search_by_position
+│   ├─ By gene → clinvar_search with "GENE[gene]"
+│   ├─ By position → clinvar_search_by_position
 │   └─ Specific variant → get_variant_details
 │
 ├─ Drug safety?
@@ -156,26 +156,26 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 
 ### ClinVar Variants
 
-**search_clinvar** - Search variants
+**clinvar_search** - Search variants
 ```bash
 # By gene
 curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
-  -F "tool_name=search_clinvar" \
+  -F "tool_name=clinvar_search" \
   -F 'params={"query": "BRCA1[gene] AND pathogenic[clinsig]", "max_results": 20}'
 
 # By condition
 curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
-  -F "tool_name=search_clinvar" \
+  -F "tool_name=clinvar_search" \
   -F 'params={"query": "hereditary breast cancer", "max_results": 20}'
 ```
 
-**search_by_position** - Search by genomic coordinates
+**clinvar_search_by_position** - Search by genomic coordinates
 ```bash
 curl -X POST "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
-  -F "tool_name=search_by_position" \
+  -F "tool_name=clinvar_search_by_position" \
   -F 'params={
     "chromosome": "17",
     "start": 43044295,
@@ -241,7 +241,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 
 ```
 1. Search ClinVar
-   → search_clinvar with gene + variant
+   → clinvar_search with gene + variant
    
 2. Check classification
    → Pathogenic/Likely pathogenic = clinically significant
