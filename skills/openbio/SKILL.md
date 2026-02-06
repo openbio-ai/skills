@@ -30,14 +30,14 @@ Create your API key at: http://openbio.tech/profile#apikeys
 export OPENBIO_API_KEY=your_key_here
 ```
 
-**Base URL**: `https://openbio.fly.dev/`
+**Base URL**: `http://api.openbio.tech/`
 
 ## Version Check (Do This First)
 
 Before using the API, verify your skill is up to date:
 
 ```bash
-curl -s "https://openbio.fly.dev/api/v1/tools/skill-version"
+curl -s "http://api.openbio.tech/api/v1/tools/skill-version"
 ```
 
 This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.0**). If the API returns a newer version:
@@ -57,24 +57,24 @@ bunx skills add openbio-ai/skills --skill openbio --global --agent '*' -y
 
 ```bash
 # Health check (no auth required)
-curl -X GET "https://openbio.fly.dev/api/v1/tools/health"
+curl -X GET "http://api.openbio.tech/api/v1/tools/health"
 
 # List available tools
-curl -X GET "https://openbio.fly.dev/api/v1/tools" \
+curl -X GET "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
 # Get tool schema (always do this first!)
-curl -X GET "https://openbio.fly.dev/api/v1/tools/{tool_name}" \
+curl -X GET "http://api.openbio.tech/api/v1/tools/{tool_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
 # Validate parameters before invoking (optional)
-curl -X POST "https://openbio.fly.dev/api/v1/tools/validate" \
+curl -X POST "http://api.openbio.tech/api/v1/tools/validate" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"tool_name": "search_pubmed", "params": {"query": "CRISPR", "max_results": 5}}'
 
 # Invoke tool
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_pubmed" \
   -F 'params={"query": "CRISPR", "max_results": 5}'
@@ -123,7 +123,7 @@ What do you need?
 ### 1. Always Check Tool Schema First
 ```bash
 # Before invoking ANY tool:
-curl -X GET "https://openbio.fly.dev/api/v1/tools/{tool_name}" \
+curl -X GET "http://api.openbio.tech/api/v1/tools/{tool_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 Parameter names vary (e.g., `pdb_ids` not `pdb_id`). Check schema to avoid errors.
@@ -132,11 +132,11 @@ Parameter names vary (e.g., `pdb_ids` not `pdb_id`). Check schema to avoid error
 Prediction tools return a `job_id`. Poll for completion:
 ```bash
 # Check status
-curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}/status" \
+curl -X GET "http://api.openbio.tech/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
 # Get results with download URLs
-curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}" \
+curl -X GET "http://api.openbio.tech/api/v1/jobs/{job_id}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 

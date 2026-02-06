@@ -257,11 +257,11 @@ All prediction tools return `job_id`. Poll and download:
 
 ```bash
 # Check status
-curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}/status" \
+curl -X GET "http://api.openbio.tech/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
 # Get results with download URLs
-curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}" \
+curl -X GET "http://api.openbio.tech/api/v1/jobs/{job_id}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 

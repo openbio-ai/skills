@@ -10,14 +10,14 @@ All requests require `OPENBIO_API_KEY` in the `X-API-Key` header:
 -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
-**Base URL**: `https://openbio.fly.dev/`
+**Base URL**: `http://api.openbio.tech/`
 
 ## Critical: Always Check Tool Schema
 
 Before invoking ANY tool, get its schema:
 
 ```bash
-curl -X GET "https://openbio.fly.dev/api/v1/tools/{tool_name}" \
+curl -X GET "http://api.openbio.tech/api/v1/tools/{tool_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -31,7 +31,7 @@ curl -X GET "https://openbio.fly.dev/api/v1/tools/{tool_name}" \
 No authentication required. Use for monitoring and load balancers:
 
 ```bash
-curl -X GET "https://openbio.fly.dev/api/v1/tools/health"
+curl -X GET "http://api.openbio.tech/api/v1/tools/health"
 ```
 
 Response: `{"status": "healthy", "timestamp": "..."}` (200) or `{"status": "unhealthy"}` (503).
@@ -41,7 +41,7 @@ Response: `{"status": "healthy", "timestamp": "..."}` (200) or `{"status": "unhe
 No authentication required. Returns the latest skill version so agents can detect stale installations:
 
 ```bash
-curl -X GET "https://openbio.fly.dev/api/v1/tools/skill-version"
+curl -X GET "http://api.openbio.tech/api/v1/tools/skill-version"
 ```
 
 Response:
@@ -62,7 +62,7 @@ Compare `version` against the `version` field in your SKILL.md metadata. If stal
 ### List All Tools
 
 ```bash
-curl -X GET "https://openbio.fly.dev/api/v1/tools" \
+curl -X GET "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -70,11 +70,11 @@ Supports opt-in pagination and category filtering:
 
 ```bash
 # Paginate (default returns all tools)
-curl -X GET "https://openbio.fly.dev/api/v1/tools?limit=50&offset=0" \
+curl -X GET "http://api.openbio.tech/api/v1/tools?limit=50&offset=0" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
 # Filter by category
-curl -X GET "https://openbio.fly.dev/api/v1/tools?category=pubmed" \
+curl -X GET "http://api.openbio.tech/api/v1/tools?category=pubmed" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -107,21 +107,21 @@ Response (truncated):
 Don't know which tool to use? Search:
 
 ```bash
-curl -X GET "https://openbio.fly.dev/api/v1/tools/search?q=protein+structure" \
+curl -X GET "http://api.openbio.tech/api/v1/tools/search?q=protein+structure" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 ### List Categories
 
 ```bash
-curl -X GET "https://openbio.fly.dev/api/v1/tools/categories" \
+curl -X GET "http://api.openbio.tech/api/v1/tools/categories" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 ### Get Category Details
 
 ```bash
-curl -X GET "https://openbio.fly.dev/api/v1/tools/categories/{category_name}" \
+curl -X GET "http://api.openbio.tech/api/v1/tools/categories/{category_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -139,7 +139,7 @@ Response:
 Check parameters before invoking a tool:
 
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools/validate" \
+curl -X POST "http://api.openbio.tech/api/v1/tools/validate" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"tool_name": "search_pubmed", "params": {"query": "CRISPR"}}'
@@ -170,7 +170,7 @@ Response (invalid):
 ### Get Tool Schema
 
 ```bash
-curl -X GET "https://openbio.fly.dev/api/v1/tools/{tool_name}" \
+curl -X GET "http://api.openbio.tech/api/v1/tools/{tool_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -193,7 +193,7 @@ Response:
 ### Invoke a Tool
 
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -H "Content-Type: multipart/form-data" \
   -F "tool_name=search_pubmed" \
@@ -215,7 +215,7 @@ Response:
 Some tools accept files:
 
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=analyze_pdb_file" \
   -F 'params={}' \
@@ -231,7 +231,7 @@ Tools prefixed with `submit_` are long-running (predictions, large analyses).
 ### Submit Job
 
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_boltz_prediction" \
   -F 'params={"sequences": [{"type": "protein", "sequence": "MVLSPADKTNVK..."}]}'
@@ -251,7 +251,7 @@ Response:
 ### Check Job Status (Quick)
 
 ```bash
-curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}/status" \
+curl -X GET "http://api.openbio.tech/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -267,7 +267,7 @@ Response:
 ### Get Job Results with Download URLs
 
 ```bash
-curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}" \
+curl -X GET "http://api.openbio.tech/api/v1/jobs/{job_id}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -301,7 +301,7 @@ curl -o model.cif "https://s3.amazonaws.com/...signed-url..."
 Full logs (modal_logs, error_logs) are omitted from the job detail endpoint to keep responses lean. Fetch them separately:
 
 ```bash
-curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}/logs" \
+curl -X GET "http://api.openbio.tech/api/v1/jobs/{job_id}/logs" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -319,7 +319,7 @@ Response:
 ### List Your Jobs
 
 ```bash
-curl -X GET "https://openbio.fly.dev/api/v1/jobs?limit=10&status=completed" \
+curl -X GET "http://api.openbio.tech/api/v1/jobs?limit=10&status=completed" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -338,7 +338,7 @@ WAIT=10
 MAX_WAIT=60
 
 while true; do
-  STATUS=$(curl -s "https://openbio.fly.dev/api/v1/jobs/$JOB_ID/status" \
+  STATUS=$(curl -s "http://api.openbio.tech/api/v1/jobs/$JOB_ID/status" \
     -H "X-API-Key: $OPENBIO_API_KEY" | jq -r '.status')
   
   if [ "$STATUS" = "completed" ]; then

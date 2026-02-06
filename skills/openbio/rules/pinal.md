@@ -92,7 +92,7 @@ NFQKTKFTVQELLKAWEAAPLLVLVVSVQLSCLAVVVQQKDKDALVVSCV...
 
 ### De Novo Design
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_pinal_text_design" \
   -F 'params={
@@ -103,7 +103,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 
 ### Membrane Protein Design
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_pinal_text_design" \
   -F 'params={
@@ -114,7 +114,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 
 ### Structure-Based Redesign
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_pinal_structure_design" \
   -F 'params={
@@ -126,7 +126,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 
 ### Get Tool Info
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_pinal_tool_info" \
   -F 'params={}'
@@ -265,7 +265,7 @@ NFQKTKFTVQELLKAWEAAPLLVLVVSVQLSCLAVVVQQKDKDALVVSCV...
 
 ```bash
 # Check job completed
-curl -s "https://openbio.fly.dev/api/v1/jobs/{job_id}/status" \
+curl -s "http://api.openbio.tech/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
 
 # Count generated sequences

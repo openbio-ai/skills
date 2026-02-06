@@ -140,7 +140,7 @@ NC_000017.11:g.7673803C>G  # Genomic
 
 **lookup_gene** - Find gene by symbol or ID (Ensembl)
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=lookup_gene" \
   -F 'params={"id": "BRCA1", "species": "human"}'
@@ -148,7 +148,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 
 **search_gene** - Search NCBI Gene
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_gene" \
   -F 'params={"query": "BRCA1 human", "max_results": 5}'
@@ -156,7 +156,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 
 **batch_gene_lookup** - Multiple genes at once
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=batch_gene_lookup" \
   -F 'params={"gene_ids": ["672", "675", "7157"]}'
@@ -167,13 +167,13 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 **get_sequence** - Get DNA or protein sequence
 ```bash
 # Genomic DNA
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_sequence" \
   -F 'params={"id": "ENSG00000139618", "type": "genomic"}'
 
 # Protein sequence
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_sequence" \
   -F 'params={"id": "ENSP00000418960", "type": "protein"}'
@@ -183,7 +183,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 
 **vep_predict** - Variant Effect Predictor
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=vep_predict" \
   -F 'params={"variants": ["13:32936732:C:T", "17:43044295:G:A"], "species": "human"}'
@@ -195,7 +195,7 @@ Returns: gene impact, protein change, consequences, SIFT/PolyPhen scores.
 
 **gwas_search_associations_by_trait** - Find variants for disease
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=gwas_search_associations_by_trait" \
   -F 'params={"trait": "EFO_0000384"}'
@@ -203,7 +203,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 
 **gwas_search_variants_by_gene** - Variants near a gene
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=gwas_search_variants_by_gene" \
   -F 'params={"gene": "APOE"}'
@@ -213,7 +213,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 
 **search_geo_datasets** - Find expression datasets
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_geo_datasets" \
   -F 'params={"query": "breast cancer RNA-seq human", "max_results": 10}'
@@ -221,7 +221,7 @@ curl -X POST "https://openbio.fly.dev/api/v1/tools" \
 
 **download_geo_series** - Get expression matrix
 ```bash
-curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+curl -X POST "http://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=download_geo_series" \
   -F 'params={"accession": "GSE12345"}'
