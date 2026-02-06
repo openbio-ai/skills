@@ -33,6 +33,9 @@ export OPENBIO_API_KEY=your_key_here
 ## Quick Start
 
 ```bash
+# Health check (no auth required)
+curl -X GET "https://openbio.fly.dev/api/v1/tools/health"
+
 # List available tools
 curl -X GET "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY"

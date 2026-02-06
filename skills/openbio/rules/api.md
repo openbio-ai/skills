@@ -26,6 +26,16 @@ curl -X GET "https://openbio.fly.dev/api/v1/tools/{tool_name}" \
 - Some use `uniprot_id`, others use `uniprot_accession`
 - Schemas show required vs optional parameters
 
+## Health Check
+
+No authentication required. Use for monitoring and load balancers:
+
+```bash
+curl -X GET "https://openbio.fly.dev/api/v1/tools/health"
+```
+
+Response: `{"status": "healthy", "timestamp": "..."}` (200) or `{"status": "unhealthy"}` (503).
+
 ## Endpoints
 
 ### List All Tools
@@ -34,6 +44,23 @@ curl -X GET "https://openbio.fly.dev/api/v1/tools/{tool_name}" \
 curl -X GET "https://openbio.fly.dev/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
+
+Supports opt-in pagination and category filtering:
+
+```bash
+# Paginate (default returns all tools)
+curl -X GET "https://openbio.fly.dev/api/v1/tools?limit=50&offset=0" \
+  -H "X-API-Key: $OPENBIO_API_KEY"
+
+# Filter by category
+curl -X GET "https://openbio.fly.dev/api/v1/tools?category=pubmed" \
+  -H "X-API-Key: $OPENBIO_API_KEY"
+```
+
+Query parameters:
+- `limit`: Max tools to return (1-500, omit for all)
+- `offset`: Number of tools to skip (default 0)
+- `category`: Filter by category name
 
 Response (truncated):
 ```json
@@ -47,9 +74,12 @@ Response (truncated):
       "is_long_running": false
     }
   ],
-  "total": 120
+  "total": 120,
+  "pagination": {"offset": 0, "limit": 50, "has_more": true}
 }
 ```
+
+**Note**: `pagination` is only present when `limit` is provided.
 
 ### Search Tools by Capability
 
@@ -245,6 +275,26 @@ Response:
 curl -o model.cif "https://s3.amazonaws.com/...signed-url..."
 ```
 
+### Get Job Logs
+
+Full logs (modal_logs, error_logs) are omitted from the job detail endpoint to keep responses lean. Fetch them separately:
+
+```bash
+curl -X GET "https://openbio.fly.dev/api/v1/jobs/{job_id}/logs" \
+  -H "X-API-Key: $OPENBIO_API_KEY"
+```
+
+Response:
+```json
+{
+  "success": true,
+  "job_id": "boltz_abc123",
+  "modal_logs": "...",
+  "error_logs": null,
+  "error_message": null
+}
+```
+
 ### List Your Jobs
 
 ```bash
@@ -255,8 +305,9 @@ curl -X GET "https://openbio.fly.dev/api/v1/jobs?limit=10&status=completed" \
 Query parameters:
 - `limit`: Max results (default 50, max 100)
 - `offset`: Pagination offset
-- `status`: Filter by status
-- `tool`: Filter by tool name
+- `status`: Filter by status (e.g., `completed`, `failed`, `running`, `pending`)
+- `tool`: Filter by tool name (e.g., `submit_boltz_prediction`)
+- `compact`: Return compact job data (default true)
 
 ## Job Polling Strategy
 
@@ -344,6 +395,7 @@ When tool invocation fails parameter validation, the response includes structure
 
 | Endpoint | Limit |
 |----------|-------|
+| GET /tools/health | No limit (no auth) |
 | GET /tools | 60/min |
 | GET /tools/search | 60/min |
 | GET /tools/{name} | 60/min |
@@ -354,6 +406,7 @@ When tool invocation fails parameter validation, the response includes structure
 | GET /jobs | 10/min |
 | GET /jobs/{id}/status | 60/min |
 | GET /jobs/{id} | 10/min |
+| GET /jobs/{id}/logs | 10/min |
 
 ## Common Patterns
 
