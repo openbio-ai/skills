@@ -143,7 +143,7 @@ What do you need to design?
 
 ### Basic Ligand-Aware Design
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_ligandmpnn_prediction" \
   -F 'params={
@@ -157,7 +157,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 ### Design with Fixed Binding Site
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_ligandmpnn_prediction" \
   -F 'params={
@@ -172,7 +172,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 ### Design with Side Chain Packing
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_ligandmpnn_prediction" \
   -F 'params={
@@ -187,7 +187,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 ### Design with AA Restrictions
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_ligandmpnn_prediction" \
   -F 'params={
@@ -201,7 +201,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 ### Sequence Scoring
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_ligandmpnn_scoring" \
   -F 'params={
@@ -274,7 +274,7 @@ MKTAYIAKQRQISFVKSQFSRQLD...
 
 ```bash
 # Check job status
-curl -s "http://api.openbio.tech/api/v1/jobs/{job_id}/status" \
+curl -s "https://api.openbio.tech/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
 
 # Verify ligand was detected in logs

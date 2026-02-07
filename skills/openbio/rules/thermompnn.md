@@ -82,7 +82,7 @@ S45F,-0.8,45,S,F,A
 
 ### Basic Analysis
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_thermompnn_prediction" \
   -F 'params={
@@ -92,7 +92,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 ### Specific Chain
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_thermompnn_prediction" \
   -F 'params={
@@ -103,7 +103,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 ### Get Tool Info
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_thermompnn_tool_info" \
   -F 'params={}'
@@ -225,7 +225,7 @@ K15E,1.5,15,K,E,A
 
 ```bash
 # Check job completed
-curl -s "http://api.openbio.tech/api/v1/jobs/{job_id}/status" \
+curl -s "https://api.openbio.tech/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
 
 # Count predictions (should be ~19 × num_residues)

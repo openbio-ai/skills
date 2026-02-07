@@ -125,7 +125,7 @@ What clinical information do you need?
 **search_clinical_trials** - Find trials
 ```bash
 # By condition
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_clinical_trials" \
   -F 'params={
@@ -136,7 +136,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
   }'
 
 # By intervention
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_clinical_trials" \
   -F 'params={
@@ -148,7 +148,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 **get_clinical_trial_details** - Get full trial info
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_clinical_trial_details" \
   -F 'params={"nct_id": "NCT04379596"}'
@@ -159,13 +159,13 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 **clinvar_search** - Search variants
 ```bash
 # By gene
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=clinvar_search" \
   -F 'params={"query": "BRCA1[gene] AND pathogenic[clinsig]", "max_results": 20}'
 
 # By condition
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=clinvar_search" \
   -F 'params={"query": "hereditary breast cancer", "max_results": 20}'
@@ -173,7 +173,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 **clinvar_search_by_position** - Search by genomic coordinates
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=clinvar_search_by_position" \
   -F 'params={
@@ -188,7 +188,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 **search_drug_adverse_events** - Query FAERS
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_drug_adverse_events" \
   -F 'params={
@@ -200,7 +200,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 **get_drug_label** - Get prescribing information
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_drug_label" \
   -F 'params={"drug_name": "metformin"}'
@@ -210,7 +210,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 **get_known_drugs_for_disease** - Find approved/trial drugs
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_known_drugs_for_disease" \
   -F 'params={"disease_id": "EFO_0000311"}'
@@ -218,7 +218,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 **get_target_disease_evidence** - Get association evidence
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_target_disease_evidence" \
   -F 'params={
@@ -229,7 +229,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 **get_target_associations** - All diseases for a target
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=get_target_associations" \
   -F 'params={"target_id": "ENSG00000146648", "size": 20}'

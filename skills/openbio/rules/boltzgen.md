@@ -157,7 +157,7 @@ output_directory/
 
 ### Basic Protein Binder Design
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_boltzgen_prediction" \
   -F 'params={
@@ -172,7 +172,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 ### Peptide Design
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_boltzgen_prediction" \
   -F 'params={
@@ -186,7 +186,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 ### Small Molecule Binder
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_boltzgen_prediction" \
   -F 'params={
@@ -308,7 +308,7 @@ out/boltzgen/2501301234/
 
 ```bash
 # Check job completed
-curl -s "http://api.openbio.tech/api/v1/jobs/{job_id}/status" \
+curl -s "https://api.openbio.tech/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
 
 # After downloading results:

@@ -1,7 +1,7 @@
 ---
 name: openbio
-version: 1.0.0
-updated_at: 2026-02-07
+version: 1.0.1
+updated_at: 2026-02-08
 description: >
   OpenBio API for biological data access and computational biology tools.
   Use when: (1) Querying biological databases (PDB, UniProt, ChEMBL, etc.),
@@ -32,14 +32,14 @@ If the user has not signed in to OpenBio, tell them to sign in to OpenBio (https
 export OPENBIO_API_KEY=your_key_here
 ```
 
-**Base URL**: `http://api.openbio.tech/`
+**Base URL**: `https://api.openbio.tech/api/v1`
 
 ## Version Check (Do This First)
 
 Before using the API, verify your skill is up to date:
 
 ```bash
-curl -s "http://api.openbio.tech/api/v1/tools/skill-version"
+curl -s "https://api.openbio.tech/api/v1/tools/skill-version"
 ```
 
 This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.0**). If the API returns a newer version:
@@ -59,24 +59,24 @@ bunx skills add openbio-ai/skills --skill openbio --global --agent '*' -y
 
 ```bash
 # Health check (no auth required)
-curl -X GET "http://api.openbio.tech/api/v1/tools/health"
+curl -X GET "https://api.openbio.tech/api/v1/tools/health"
 
 # List available tools
-curl -X GET "http://api.openbio.tech/api/v1/tools" \
+curl -X GET "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
 # Get tool schema (always do this first!)
-curl -X GET "http://api.openbio.tech/api/v1/tools/{tool_name}" \
+curl -X GET "https://api.openbio.tech/api/v1/tools/{tool_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
 # Validate parameters before invoking (optional)
-curl -X POST "http://api.openbio.tech/api/v1/tools/validate" \
+curl -X POST "https://api.openbio.tech/api/v1/tools/validate" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"tool_name": "search_pubmed", "params": {"query": "CRISPR", "max_results": 5}}'
 
 # Invoke tool
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=search_pubmed" \
   -F 'params={"query": "CRISPR", "max_results": 5}'
@@ -125,7 +125,7 @@ What do you need?
 ### 1. Always Check Tool Schema First
 ```bash
 # Before invoking ANY tool:
-curl -X GET "http://api.openbio.tech/api/v1/tools/{tool_name}" \
+curl -X GET "https://api.openbio.tech/api/v1/tools/{tool_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 Parameter names vary (e.g., `pdb_ids` not `pdb_id`). Check schema to avoid errors.
@@ -134,11 +134,11 @@ Parameter names vary (e.g., `pdb_ids` not `pdb_id`). Check schema to avoid error
 Prediction tools return a `job_id`. Poll for completion:
 ```bash
 # Check status
-curl -X GET "http://api.openbio.tech/api/v1/jobs/{job_id}/status" \
+curl -X GET "https://api.openbio.tech/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 
 # Get results with download URLs
-curl -X GET "http://api.openbio.tech/api/v1/jobs/{job_id}" \
+curl -X GET "https://api.openbio.tech/api/v1/jobs/{job_id}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 

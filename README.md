@@ -38,7 +38,7 @@ All API requests require `OPENBIO_API_KEY` environment variable.
 export OPENBIO_API_KEY=your_api_key_here
 ```
 
-**Base URL**: `http://api.openbio.tech/`
+**Base URL**: `https://api.openbio.tech/api/v1`
 
 ## Usage
 

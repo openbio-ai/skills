@@ -121,7 +121,7 @@ MKTAYIAKQRQISFVKSHFSRQLEERGLTKE...
 
 ### Basic Design
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_proteinmpnn_prediction" \
   -F 'params={
@@ -134,7 +134,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 ### Soluble Design
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_proteinmpnn_prediction" \
   -F 'params={
@@ -147,7 +147,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 ### Multi-Chain Design
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_proteinmpnn_prediction" \
   -F 'params={
@@ -160,7 +160,7 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 ### High Diversity
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_proteinmpnn_prediction" \
   -F 'params={
@@ -218,7 +218,7 @@ MKTAYIAKQRQISFVKSQFSRQLDERGLTKE...
 
 ```bash
 # Check job status
-curl -s "http://api.openbio.tech/api/v1/jobs/{job_id}/status" \
+curl -s "https://api.openbio.tech/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
 
 # Count generated sequences (should match num_seq_per_target)

@@ -161,7 +161,7 @@ Rank structures by quality:
 
 ### Submit Prediction
 ```bash
-curl -X POST "http://api.openbio.tech/api/v1/tools" \
+curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -H "X-API-Key: $OPENBIO_API_KEY" \
   -F "tool_name=submit_chai_prediction" \
   -F 'params={
@@ -176,13 +176,13 @@ curl -X POST "http://api.openbio.tech/api/v1/tools" \
 
 ### Poll Job Status
 ```bash
-curl -X GET "http://api.openbio.tech/api/v1/jobs/{job_id}/status" \
+curl -X GET "https://api.openbio.tech/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
 ### Get Results
 ```bash
-curl -X GET "http://api.openbio.tech/api/v1/jobs/{job_id}" \
+curl -X GET "https://api.openbio.tech/api/v1/jobs/{job_id}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 
@@ -255,7 +255,7 @@ predictions/
 
 ```bash
 # Check job completed
-curl -s "http://api.openbio.tech/api/v1/jobs/{job_id}/status" \
+curl -s "https://api.openbio.tech/api/v1/jobs/{job_id}/status" \
   -H "X-API-Key: $OPENBIO_API_KEY" | jq '.status'
 
 # After downloading, verify CIF files exist
