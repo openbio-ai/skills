@@ -1,6 +1,6 @@
 ---
 name: openbio
-version: 1.0.2
+version: 1.0.3
 updated_at: 2026-02-12
 description: >
   OpenBio API for biological data access and computational biology tools.
@@ -42,7 +42,7 @@ Before using the API, verify your skill is up to date:
 curl -s "https://api.openbio.tech/api/v1/tools/skill-version"
 ```
 
-This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.2**). If the API returns a newer version:
+This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.3**). If the API returns a newer version:
 
 ```bash
 bunx skills update
@@ -117,7 +117,7 @@ What do you need?
 │
 ├─ Pathway analysis?
 │   └─ Read rules/pathway-analysis.md
-│       → KEGG, Reactome, STRING
+│       → KEGG, Reactome, STRING, g:Profiler (GO enrichment)
 │
 └─ Clinical/drug data?
     └─ Read rules/clinical-data.md
@@ -174,7 +174,7 @@ Read these for domain-specific knowledge:
 | [rules/blast.md](rules/blast.md) | NCBI BLAST sequence similarity search |
 | [rules/cheminformatics.md](rules/cheminformatics.md) | RDKit, PubChem, ChEMBL |
 | [rules/molecular-biology.md](rules/molecular-biology.md) | Primers, PCR, restriction, assembly |
-| [rules/pathway-analysis.md](rules/pathway-analysis.md) | KEGG, Reactome, STRING |
+| [rules/pathway-analysis.md](rules/pathway-analysis.md) | KEGG, Reactome, STRING, g:Profiler |
 | [rules/clinical-data.md](rules/clinical-data.md) | ClinicalTrials, ClinVar, FDA |
 
 ### ML Prediction Tools (Detailed)
@@ -202,7 +202,7 @@ Read these for domain-specific knowledge:
 | Cheminformatics | 20+ | calculate_molecular_properties, chembl_similarity_search |
 | Molecular biology | 15 | design_primers, restriction_digest, assemble_gibson |
 | Structure prediction | 15+ | submit_boltz_prediction, submit_proteinmpnn_prediction |
-| Pathway analysis | 24 | analyze_gene_list, get_string_network |
+| Pathway analysis | 26 | analyze_gene_list, get_string_network, go_enrichment, convert_gene_ids |
 | Clinical data | 22 | search_clinical_trials, clinvar_search |
 
 ## Troubleshooting: Updating the Skill
