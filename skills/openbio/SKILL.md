@@ -1,7 +1,7 @@
 ---
 name: openbio
-version: 1.0.1
-updated_at: 2026-02-08
+version: 1.0.2
+updated_at: 2026-02-12
 description: >
   OpenBio API for biological data access and computational biology tools.
   Use when: (1) Querying biological databases (PDB, UniProt, ChEMBL, etc.),
@@ -42,7 +42,7 @@ Before using the API, verify your skill is up to date:
 curl -s "https://api.openbio.tech/api/v1/tools/skill-version"
 ```
 
-This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.0**). If the API returns a newer version:
+This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.2**). If the API returns a newer version:
 
 ```bash
 bunx skills update
@@ -98,6 +98,10 @@ What do you need?
 ├─ Genomics/variants?
 │   └─ Read rules/genomics.md
 │       → Ensembl, GWAS, VEP, GEO
+│
+├─ Sequence similarity search (BLAST)?
+│   └─ Read rules/blast.md
+│       → submit_blast, check_blast_status, get_blast_results
 │
 ├─ Small molecule analysis?
 │   └─ Read rules/cheminformatics.md
@@ -167,6 +171,7 @@ Read these for domain-specific knowledge:
 | [rules/protein-structure.md](rules/protein-structure.md) | PDB, PDBe, AlphaFold, UniProt |
 | [rules/literature.md](rules/literature.md) | PubMed, arXiv, bioRxiv, OpenAlex |
 | [rules/genomics.md](rules/genomics.md) | Ensembl, ENA, Gene, GWAS, GEO |
+| [rules/blast.md](rules/blast.md) | NCBI BLAST sequence similarity search |
 | [rules/cheminformatics.md](rules/cheminformatics.md) | RDKit, PubChem, ChEMBL |
 | [rules/molecular-biology.md](rules/molecular-biology.md) | Primers, PCR, restriction, assembly |
 | [rules/pathway-analysis.md](rules/pathway-analysis.md) | KEGG, Reactome, STRING |
@@ -193,6 +198,7 @@ Read these for domain-specific knowledge:
 | Protein structure | 23 | fetch_pdb_metadata, get_alphafold_prediction |
 | Literature | 14 | search_pubmed, arxiv_search, biorxiv_search_keywords |
 | Genomics | 27 | lookup_gene, vep_predict, gwas_search_associations_by_trait |
+| Sequence similarity | 3 | submit_blast, check_blast_status, get_blast_results |
 | Cheminformatics | 20+ | calculate_molecular_properties, chembl_similarity_search |
 | Molecular biology | 15 | design_primers, restriction_digest, assemble_gibson |
 | Structure prediction | 15+ | submit_boltz_prediction, submit_proteinmpnn_prediction |
