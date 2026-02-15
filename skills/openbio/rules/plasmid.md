@@ -67,6 +67,23 @@ Example: Insert 10 bp at position 100, then delete [200, 210)
 - So delete [210, 220) to target the same original region
 ```
 
+### Operation Ordering Best Practices
+
+1. **Delete annotations before sequence modifications.** Annotation operations use `openbio_id` to find features. Sequence operations (insert, delete, replace) do not change IDs, but if a feature is fully inside a deleted range, it is removed — making subsequent `delete_annotation` or `update_annotation` calls for that ID fail with `annotation_not_found`.
+
+2. **Create annotations after sequence modifications.** After an insert or delete, downstream coordinates shift. Create new annotations using post-edit coordinates (which are the coordinates you see in the response from the sequence operation).
+
+3. **Use `set_metadata` as a read-only probe.** To get current `openbio_id` values without changing anything, call `edit_plasmid` with only a `set_metadata` operation (e.g., just setting the description to its current value). The response includes the full feature list with IDs.
+
+Recommended ordering within a batch:
+```
+1. delete_annotation (by ID — before sequence changes)
+2. delete_range / insert_sequence / replace_range (sequence edits)
+3. create_annotation (using post-edit coordinates)
+4. update_annotation (for features that survived the edit)
+5. set_metadata (order doesn't matter)
+```
+
 ## Feature Handling Modes
 
 The `feature_handling` parameter controls what happens when a sequence edit overlaps existing feature boundaries.
@@ -106,6 +123,24 @@ When `validation_mode: "cloning_safe"`:
 - Results appear in `validation_summary.warnings` and `validation_summary.affected_features`
 
 When combined with `strict_validation: true`, validation errors block the edit entirely and no changes are saved.
+
+## Circular Plasmid Editing
+
+Circular topology is auto-detected from the plasmid file's metadata. When editing circular plasmids, the engine uses circular-aware coordinate math automatically — no special parameters needed.
+
+### What works automatically
+
+- **Downstream feature shifting**: Insertions, deletions, and replacements shift only downstream features (features at or after the edit position). Upstream features are untouched.
+- **Origin-crossing features**: Features that span the origin (e.g., a promoter from position 4900 to position 200 on a 5000 bp plasmid) are represented as compound locations and handled correctly during edits.
+- **Wrap-around after shift**: If a feature is shifted past the end of the sequence, its coordinates wrap around the origin automatically.
+
+### Coordinates are still linear
+
+Even on circular plasmids, coordinates are 0-based and end-exclusive `[start, end)` within the sequence length. You do not need to handle wrap-around yourself — the engine does it. Position 0 is the origin; position `length` is after the last base (same as position 0 on a circle).
+
+### Editing near the origin
+
+Insertions at position 0 push all features downstream. Insertions at the end of the sequence (position = sequence length) append without shifting any features. Both work correctly on circular plasmids.
 
 ## Supported File Formats
 
@@ -366,6 +401,18 @@ Wrong:  edit_plasmid with filesystem_path: "seq.fasta"
 Right:  Use .gb, .gbk, or .dna files for editing
         FASTA files are read-only (no annotation support)
 ```
+
+### 6. Editing in-place during testing
+
+```
+Risky:  edit_plasmid with only filesystem_path (overwrites original)
+        → If the edit is wrong, the original file is gone
+
+Safe:   Set output_path to a separate file during testing
+        → Original is preserved; inspect the output before committing
+```
+
+Use `output_path` when experimenting. Once you've confirmed the edit is correct, you can either repeat without `output_path` (for in-place) or keep the output file.
 
 ## Common Workflows
 
