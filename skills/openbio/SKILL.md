@@ -1,7 +1,7 @@
 ---
 name: openbio
-version: 1.0.3
-updated_at: 2026-02-12
+version: 1.0.4
+updated_at: 2026-02-15
 description: >
   OpenBio API for biological data access and computational biology tools.
   Use when: (1) Querying biological databases (PDB, UniProt, ChEMBL, etc.),
@@ -9,7 +9,8 @@ description: >
   (3) Running structure prediction (Boltz, Chai, ProteinMPNN),
   (4) Performing pathway/enrichment analysis,
   (5) Designing molecular biology experiments (primers, cloning),
-  (6) Analyzing variants and clinical data.
+  (6) Analyzing variants and clinical data,
+  (7) Analyzing and editing plasmid files (GenBank, SnapGene).
 metadata:
   tags: [biology, protein, genomics, chemistry, bioinformatics, drug-discovery]
 ---
@@ -42,7 +43,7 @@ Before using the API, verify your skill is up to date:
 curl -s "https://api.openbio.tech/api/v1/tools/skill-version"
 ```
 
-This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.3**). If the API returns a newer version:
+This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.4**). If the API returns a newer version:
 
 ```bash
 bunx skills update
@@ -111,6 +112,10 @@ What do you need?
 │   └─ Read rules/molecular-biology.md
 │       → Primers, restriction, Gibson, Golden Gate
 │
+├─ Plasmid analysis/editing?
+│   └─ Read rules/plasmid.md
+│       → parse_plasmid_file, edit_plasmid
+│
 ├─ Structure prediction/design?
 │   └─ Read rules/structure-prediction.md
 │       → Boltz, Chai, ProteinMPNN, LigandMPNN
@@ -174,6 +179,7 @@ Read these for domain-specific knowledge:
 | [rules/blast.md](rules/blast.md) | NCBI BLAST sequence similarity search |
 | [rules/cheminformatics.md](rules/cheminformatics.md) | RDKit, PubChem, ChEMBL |
 | [rules/molecular-biology.md](rules/molecular-biology.md) | Primers, PCR, restriction, assembly |
+| [rules/plasmid.md](rules/plasmid.md) | parse_plasmid_file, edit_plasmid |
 | [rules/pathway-analysis.md](rules/pathway-analysis.md) | KEGG, Reactome, STRING, g:Profiler |
 | [rules/clinical-data.md](rules/clinical-data.md) | ClinicalTrials, ClinVar, FDA |
 
@@ -201,6 +207,7 @@ Read these for domain-specific knowledge:
 | Sequence similarity | 3 | submit_blast, check_blast_status, get_blast_results |
 | Cheminformatics | 20+ | calculate_molecular_properties, chembl_similarity_search |
 | Molecular biology | 15 | design_primers, restriction_digest, assemble_gibson |
+| Plasmid | 2 | parse_plasmid_file, edit_plasmid |
 | Structure prediction | 15+ | submit_boltz_prediction, submit_proteinmpnn_prediction |
 | Pathway analysis | 26 | analyze_gene_list, get_string_network, go_enrichment, convert_gene_ids |
 | Clinical data | 22 | search_clinical_trials, clinvar_search |

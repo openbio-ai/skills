@@ -345,6 +345,14 @@ curl -X POST "https://api.openbio.tech/api/v1/tools" \
 | Gibson fails | Overlaps too short | Use 25+ bp overlaps |
 | Golden Gate low yield | Internal enzyme sites | Remove BsaI sites from parts |
 
+## Related: Plasmid Tools
+
+For editing plasmid files directly (insert/delete/replace sequence, manage annotations, update metadata), see [rules/plasmid.md](plasmid.md). Common combined workflows:
+
+- **Insert gene into vector**: `restriction_find_sites` → `edit_plasmid` (insert_sequence + create_annotation)
+- **Verify construct**: `restriction_digest` + `simulate_gel` using sequence from `parse_plasmid_file`
+- **Design primers for plasmid insert**: `parse_plasmid_file` → `design_primers` with target region
+
 ---
 
 **Tip**: Always simulate your cloning strategy before ordering primers or starting experiments.
