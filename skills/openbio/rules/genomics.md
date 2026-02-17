@@ -11,6 +11,8 @@ Use genomics tools when:
 4. Finding GWAS associations for diseases
 5. Accessing gene expression datasets
 
+For CRISPR guide design and sgRNA efficiency prediction, use [deepcrispr.md](deepcrispr.md).
+
 ## Decision Tree
 
 ```
@@ -34,8 +36,11 @@ What genomics data do you need?
 │   ├─ Variants near gene → gwas_search_variants_by_gene
 │   └─ Specific variant → gwas_search_associations_by_variant
 │
-└─ Expression data?
-    └─ search_geo_datasets → fetch_geo_summary → download_geo_series
+├─ Expression data?
+│   └─ search_geo_datasets → fetch_geo_summary → download_geo_series
+│
+└─ CRISPR guide design?
+    └─ See [deepcrispr.md](deepcrispr.md) for sgRNA efficiency prediction
 ```
 
 ## Key Concepts
