@@ -1,7 +1,7 @@
 ---
 name: openbio
-version: 1.0.4
-updated_at: 2026-02-15
+version: 1.0.5
+updated_at: 2026-02-17
 description: >
   OpenBio API for biological data access and computational biology tools.
   Use when: (1) Querying biological databases (PDB, UniProt, ChEMBL, etc.),
@@ -89,6 +89,9 @@ curl -X POST "https://api.openbio.tech/api/v1/tools" \
 What do you need?
 │
 ├─ Protein/structure data?
+│   ├─ Domain identification needed?
+│   │   └─ Read rules/interpro.md
+│   │       → Pfam, SMART, PROSITE, CDD, InterPro
 │   └─ Read rules/protein-structure.md
 │       → PDB, AlphaFold, UniProt tools
 │
@@ -174,6 +177,7 @@ Read these for domain-specific knowledge:
 | File | Tools Covered |
 |------|---------------|
 | [rules/protein-structure.md](rules/protein-structure.md) | PDB, PDBe, AlphaFold, UniProt |
+| [rules/interpro.md](rules/interpro.md) | Pfam, SMART, PROSITE, CDD, InterPro |
 | [rules/literature.md](rules/literature.md) | PubMed, arXiv, bioRxiv, OpenAlex |
 | [rules/genomics.md](rules/genomics.md) | Ensembl, ENA, Gene, GWAS, GEO |
 | [rules/blast.md](rules/blast.md) | NCBI BLAST sequence similarity search |
@@ -202,6 +206,7 @@ Read these for domain-specific knowledge:
 | Category | Count | Examples |
 |----------|-------|----------|
 | Protein structure | 23 | fetch_pdb_metadata, get_alphafold_prediction |
+| Protein domains | 4 | search_interpro_entries, get_protein_domains, get_interpro_entry |
 | Literature | 14 | search_pubmed, arxiv_search, biorxiv_search_keywords |
 | Genomics | 27 | lookup_gene, vep_predict, gwas_search_associations_by_trait |
 | Sequence similarity | 3 | submit_blast, check_blast_status, get_blast_results |
