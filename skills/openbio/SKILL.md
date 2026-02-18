@@ -83,6 +83,30 @@ curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -F 'params={"query": "CRISPR", "max_results": 5}'
 ```
 
+## One-Minute Workflow
+
+Follow this when you need a fast, reliable end-to-end path:
+
+```bash
+# 1) Search for the right tool
+curl -s "https://openbio.fly.dev/api/v1/tools/search?q=protein+structure" \
+  -H "X-API-Key: $OPENBIO_API_KEY"
+
+# 2) Read the tool schema before invoking
+curl -s "https://openbio.fly.dev/api/v1/tools/fetch_pdb_metadata" \
+  -H "X-API-Key: $OPENBIO_API_KEY"
+
+# 3) Invoke the tool
+curl -X POST "https://openbio.fly.dev/api/v1/tools" \
+  -H "X-API-Key: $OPENBIO_API_KEY" \
+  -F "tool_name=fetch_pdb_metadata" \
+  -F 'params={"pdb_ids": ["1MBO"]}'
+
+# 4) If a tool returns job_id, poll until complete
+curl -s "https://openbio.fly.dev/api/v1/jobs/{job_id}/status" \
+  -H "X-API-Key: $OPENBIO_API_KEY"
+```
+
 ## Decision Tree: Which Tools to Use
 
 ```
@@ -138,6 +162,8 @@ curl -X GET "https://api.openbio.tech/api/v1/tools/{tool_name}" \
   -H "X-API-Key: $OPENBIO_API_KEY"
 ```
 Parameter names vary (e.g., `pdb_ids` not `pdb_id`). Check schema to avoid errors.
+
+For full API lifecycle guidance (discovery, schema, invoke, jobs), read [rules/api.md](rules/api.md).
 
 ### 2. Long-Running Jobs (submit_* tools)
 Prediction tools return a `job_id`. Poll for completion:
@@ -223,6 +249,20 @@ If the API returns a newer version than the one in this file (see **Version Chec
 3. **Wrong tool for task** → Check decision trees in rule files
 4. **Not polling jobs** → Missing prediction results
 5. **Wrong tool name** → 404 responses include "Did you mean?" suggestions with similar tool names
+
+## Troubleshooting (Quick Fixes)
+
+* **401 Unauthorized**: Confirm `OPENBIO_API_KEY` is set and valid.
+* **400 Bad Request**: Re-check the tool schema for required fields and parameter names.
+* **429 Rate Limited**: Back off and retry after waiting.
+
+See [rules/api.md](rules/api.md) for error-handling details.
+
+## Out of Scope
+
+Use this skill for biological and chemical data workflows. If the task is not tied to
+bio/chem data access, analysis, or structure prediction, use a more appropriate skill
+or general workflow instead.
 
 ---
 
