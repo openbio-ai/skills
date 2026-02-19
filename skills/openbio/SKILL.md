@@ -1,7 +1,7 @@
 ---
 name: openbio
-version: 1.0.5
-updated_at: 2026-02-17
+version: 1.0.6
+updated_at: 2026-02-19
 description: >
   OpenBio API for biological data access and computational biology tools.
   Use when: (1) Querying biological databases (PDB, UniProt, ChEMBL, etc.),
@@ -43,7 +43,7 @@ Before using the API, verify your skill is up to date:
 curl -s "https://api.openbio.tech/api/v1/tools/skill-version"
 ```
 
-This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.4**). If the API returns a newer version:
+This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.6**). If the API returns a newer version:
 
 ```bash
 bunx skills update
@@ -106,6 +106,10 @@ What do you need?
 ├─ Sequence similarity search (BLAST)?
 │   └─ Read rules/blast.md
 │       → submit_blast, check_blast_status, get_blast_results
+│
+├─ Remote homology / domain identification (HMMER)?
+│   └─ Read rules/hmmer.md
+│       → submit_hmmer_search, get_hmmer_results
 │
 ├─ Small molecule analysis?
 │   └─ Read rules/cheminformatics.md
@@ -181,6 +185,7 @@ Read these for domain-specific knowledge:
 | [rules/literature.md](rules/literature.md) | PubMed, arXiv, bioRxiv, OpenAlex |
 | [rules/genomics.md](rules/genomics.md) | Ensembl, ENA, Gene, GWAS, GEO |
 | [rules/blast.md](rules/blast.md) | NCBI BLAST sequence similarity search |
+| [rules/hmmer.md](rules/hmmer.md) | HMMER remote homology and Pfam domain search |
 | [rules/cheminformatics.md](rules/cheminformatics.md) | RDKit, PubChem, ChEMBL |
 | [rules/molecular-biology.md](rules/molecular-biology.md) | Primers, PCR, restriction, assembly |
 | [rules/plasmid.md](rules/plasmid.md) | parse_plasmid_file, edit_plasmid |
@@ -210,6 +215,7 @@ Read these for domain-specific knowledge:
 | Literature | 14 | search_pubmed, arxiv_search, biorxiv_search_keywords |
 | Genomics | 27 | lookup_gene, vep_predict, gwas_search_associations_by_trait |
 | Sequence similarity | 3 | submit_blast, check_blast_status, get_blast_results |
+| Remote homology/domains | 2 | submit_hmmer_search, get_hmmer_results |
 | Cheminformatics | 20+ | calculate_molecular_properties, chembl_similarity_search |
 | Molecular biology | 15 | design_primers, restriction_digest, assemble_gibson |
 | Plasmid | 2 | parse_plasmid_file, edit_plasmid |
