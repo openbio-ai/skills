@@ -44,7 +44,7 @@ Before using the API, verify your skill is up to date:
 curl -s "https://api.openbio.tech/api/v1/tools/skill-version"
 ```
 
-This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.4**). If the API returns a newer version:
+This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.1.0**). If the API returns a newer version:
 
 ```bash
 bunx skills update

@@ -38,8 +38,8 @@ What CRISPR task do you need?
 | Parameter | Type | Required | Default | Range | Description |
 |-----------|------|----------|---------|-------|-------------|
 | `sequences` | list[str] | Yes | — | 1-100 items | sgRNA sequences (20-23nt, ACGT only) |
-| `pam` | string | No | NGG | — | PAM motif (NGG, NAG, NGA, NNGRRT) |
-| `model_type` | string | No | azimuth | — | Prediction model (azimuth, ruleset2) |
+| `pam` | string | No | NGG | — | PAM motif for SpCas9 (NGG, NAG, NGA) |
+| `model_type` | string | No | ruleset2 | — | Scoring model (ruleset2, azimuth) |
 | `include_off_target` | boolean | No | True | — | Compute off-target scores |
 | `genome` | string | No | hg38 | — | Reference genome (hg38, hg19, mm10) |
 | `max_off_targets` | integer | No | 10 | 1-100 | Max off-target sites per guide |
@@ -52,9 +52,9 @@ What CRISPR task do you need?
 |-----------|------|----------|---------|-------|-------------|
 | `target` | string | Yes | — | — | Gene symbol, Ensembl ID, or chr:start-end |
 | `species` | string | No | human | — | Target species (human, mouse) |
-| `pam` | string | No | NGG | — | PAM motif (NGG, NAG, NGA, NNGRRT) |
+| `pam` | string | No | NGG | — | PAM motif for SpCas9 (NGG, NAG, NGA) |
 | `guide_length` | integer | No | 20 | 17-25 | Guide RNA length |
-| `model_type` | string | No | azimuth | — | Scoring model (azimuth, ruleset2) |
+| `model_type` | string | No | ruleset2 | — | Scoring model (ruleset2, azimuth) |
 | `num_guides` | integer | No | 10 | 1-50 | Number of top guides to return |
 | `include_off_target` | boolean | No | True | — | Compute off-target scores |
 | `genome` | string | No | hg38 | — | Reference genome (hg38, hg19, mm10) |
@@ -139,7 +139,7 @@ curl -X POST "https://api.openbio.tech/api/v1/tools" \
   -F 'params={
     "sequences": ["GACCGGTTGACGGTTTCGAA", "TTCGATCGTACGTACGTCGA"],
     "pam": "NGG",
-    "model_type": "azimuth",
+    "model_type": "ruleset2",
     "include_off_target": true,
     "genome": "hg38"
   }'
@@ -183,7 +183,7 @@ curl -X POST "https://api.openbio.tech/api/v1/tools" \
 - **Per day**: 10 jobs maximum
 - **Max sequences**: 100 per prediction request
 - **Max guides**: 50 per design request
-- **Timeout**: 30 minutes
+- **Timeout**: 30 minutes (prediction), 40 minutes (guide design)
 
 ## Common Mistakes
 
@@ -201,6 +201,14 @@ curl -X POST "https://api.openbio.tech/api/v1/tools" \
 ```
 ```
 ✅ sequences: ["GACCGGTTGACGGTTTCG"]
+```
+
+### Wrong: Using unsupported PAM (NNGRRT is SaCas9, not supported by Rule Set 2)
+```
+❌ pam: "NNGRRT"
+```
+```
+✅ pam: "NGG"  (or NAG / NGA for relaxed SpCas9 PAMs)
 ```
 
 ### Wrong: Wrong genome for species
@@ -347,24 +355,16 @@ curl -s "https://api.openbio.tech/api/v1/jobs/{job_id}" \
 
 ## Model Comparison
 
-| Feature | Azimuth (Current) | Alternative Models |
-|---------|-------------------|--------------------|
-| On-target accuracy | High | Varies |
-| Off-target prediction | Yes (Cas-OFFinder) | Varies |
-| Training data | Large-scale (Doench 2016) | Varies |
-| Speed | Fast (no GPU needed) | Varies |
-| Best for | Production use | Research/comparison |
+| Feature | Azimuth / Rule Set 2 (Current) |
+|---------|--------------------------------|
+| On-target accuracy | High (position-specific features) |
+| Off-target prediction | Yes (Cas-OFFinder) |
+| Training data | Large-scale Cas9 screen (Doench 2016) |
+| Compute | CPU-only, no GPU required |
+| Best for | Production guide selection |
 
-**Currently Implemented**: Azimuth for on-target scoring + Cas-OFFinder for off-target detection
-**Note**: Model parameter is available for future integration of additional models
-
-## Rate Limits
-
-- **Per minute**: 2 jobs maximum
-- **Per day**: 10 jobs maximum
-- **Max sequences**: 100 per request
-- **Max guides**: 50 per design request
-- **Timeout**: 30 minutes
+**Currently Implemented**: Azimuth / Rule Set 2 for on-target scoring + Cas-OFFinder for off-target detection.
+Both `ruleset2` and `azimuth` values for `model_type` use the same implementation.
 
 ---
 
