@@ -1,7 +1,7 @@
 ---
 name: openbio
-version: 1.0.6
-updated_at: 2026-02-19
+version: 1.0.7
+updated_at: 2026-02-22
 description: >
   OpenBio API for biological data access and computational biology tools.
   Use when: (1) Querying biological databases (PDB, UniProt, ChEMBL, etc.),
@@ -43,7 +43,7 @@ Before using the API, verify your skill is up to date:
 curl -s "https://api.openbio.tech/api/v1/tools/skill-version"
 ```
 
-This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.6**). If the API returns a newer version:
+This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.7**). If the API returns a newer version:
 
 ```bash
 bunx skills update
@@ -92,6 +92,9 @@ What do you need?
 │   ├─ Domain identification needed?
 │   │   └─ Read rules/interpro.md
 │   │       → Pfam, SMART, PROSITE, CDD, InterPro
+│   ├─ Experimental thermostability data (ddG, Tm) for a protein?
+│   │   └─ Read rules/fireprotdb.md
+│   │       → search_fireprotdb, get_fireprotdb_sequence, get_fireprotdb_mutant
 │   └─ Read rules/protein-structure.md
 │       → PDB, AlphaFold, UniProt tools
 │
@@ -114,6 +117,10 @@ What do you need?
 ├─ Small molecule analysis?
 │   └─ Read rules/cheminformatics.md
 │       → RDKit, PubChem, ChEMBL
+│
+├─ Codon optimization / synthetic gene design?
+│   └─ Read rules/codon-optimization.md
+│       → optimize_codons
 │
 ├─ Cloning/PCR/assembly?
 │   └─ Read rules/molecular-biology.md
@@ -182,11 +189,13 @@ Read these for domain-specific knowledge:
 |------|---------------|
 | [rules/protein-structure.md](rules/protein-structure.md) | PDB, PDBe, AlphaFold, UniProt |
 | [rules/interpro.md](rules/interpro.md) | Pfam, SMART, PROSITE, CDD, InterPro |
+| [rules/fireprotdb.md](rules/fireprotdb.md) | FireProtDB experimental thermostability (ddG, Tm) data |
 | [rules/literature.md](rules/literature.md) | PubMed, arXiv, bioRxiv, OpenAlex |
 | [rules/genomics.md](rules/genomics.md) | Ensembl, ENA, Gene, GWAS, GEO |
 | [rules/blast.md](rules/blast.md) | NCBI BLAST sequence similarity search |
 | [rules/hmmer.md](rules/hmmer.md) | HMMER remote homology and Pfam domain search |
 | [rules/cheminformatics.md](rules/cheminformatics.md) | RDKit, PubChem, ChEMBL |
+| [rules/codon-optimization.md](rules/codon-optimization.md) | optimize_codons — MFC or harmonization strategy; E. coli, human, yeast, CHO, mouse, Pichia; SD-site/restriction/homopolymer detection |
 | [rules/molecular-biology.md](rules/molecular-biology.md) | Primers, PCR, restriction, assembly |
 | [rules/plasmid.md](rules/plasmid.md) | parse_plasmid_file, edit_plasmid |
 | [rules/pathway-analysis.md](rules/pathway-analysis.md) | KEGG, Reactome, STRING, g:Profiler |
@@ -212,11 +221,13 @@ Read these for domain-specific knowledge:
 |----------|-------|----------|
 | Protein structure | 23 | fetch_pdb_metadata, get_alphafold_prediction |
 | Protein domains | 4 | search_interpro_entries, get_protein_domains, get_interpro_entry |
+| FireProtDB | 3 | search_fireprotdb, get_fireprotdb_sequence, get_fireprotdb_mutant |
 | Literature | 14 | search_pubmed, arxiv_search, biorxiv_search_keywords |
 | Genomics | 27 | lookup_gene, vep_predict, gwas_search_associations_by_trait |
 | Sequence similarity | 3 | submit_blast, check_blast_status, get_blast_results |
 | Remote homology/domains | 2 | submit_hmmer_search, get_hmmer_results |
 | Cheminformatics | 20+ | calculate_molecular_properties, chembl_similarity_search |
+| Codon optimization | 1 | optimize_codons |
 | Molecular biology | 15 | design_primers, restriction_digest, assemble_gibson |
 | Plasmid | 2 | parse_plasmid_file, edit_plasmid |
 | Structure prediction | 15+ | submit_boltz_prediction, submit_proteinmpnn_prediction |
