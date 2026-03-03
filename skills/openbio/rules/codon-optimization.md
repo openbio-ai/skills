@@ -271,9 +271,9 @@ Each entry covers 50 nt: `{"start": 1, "end": 50, "gc_percent": 52.0, "flag": fa
 | "source_organism required" | harmonize without source_organism | Add source_organism parameter |
 | "harmonize requires sequence_type=dna" | Harmonize with protein input | Use strategy="mfc" for protein input (no source) |
 | Items in irreducible_issues | SD/restriction site structurally encoded by amino acid sequence | No fix possible without protein engineering; inform synthesis provider; most vendors handle these cases with sequence flagging |
-| SD site in irreducible_issues (E. coli) | e.g., Glu(GAG)-Lys(AAG)-Arg pattern = GAGGAAG contains GAGG | Expected for natural sequences; does not prevent expression in practice, just adds minor risk of rare truncation |
+| SD site in irreducible_issues (E. coli) | e.g., Glu(GAA)-Gly(GGC) codon boundary produces AAGG; fixing it (GAA→GAG) would create GAGG — a different SD motif. Also: Glu(GAG)-Lys(AAG)-Arg → GAGGAAG contains GAGG | Expected for natural sequences; does not prevent expression in practice, just adds minor risk of rare truncation |
 | gc_windows flag=true after smoothing | Homopolymer or extreme composition window | Check sequence_issues for homopolymer runs; these require gene synthesis with special protocols |
-| auto_fixes is empty but irreducible_issues has items | Auto-resolution failed for all instances | All synonymous alternatives for overlapping codons encode the same motif — structurally unavoidable |
+| auto_fixes is empty but irreducible_issues has items | Auto-resolution failed for all instances | Either all synonymous alternatives for overlapping codons still encode the motif, or every alternative that breaks the motif introduces a different forbidden motif — structurally unavoidable either way |
 
 ## Related Tools
 
