@@ -1,7 +1,7 @@
 ---
 name: openbio
-version: 1.0.4
-updated_at: 2026-02-15
+version: 1.1.0
+updated_at: 2026-02-16
 description: >
   OpenBio API for biological data access and computational biology tools.
   Use when: (1) Querying biological databases (PDB, UniProt, ChEMBL, etc.),
@@ -9,8 +9,9 @@ description: >
   (3) Running structure prediction (Boltz, Chai, ProteinMPNN),
   (4) Performing pathway/enrichment analysis,
   (5) Designing molecular biology experiments (primers, cloning),
-  (6) Analyzing variants and clinical data,
-  (7) Analyzing and editing plasmid files (GenBank, SnapGene).
+  (6) Designing CRISPR experiments and predicting guide RNA efficiency,
+  (7) Analyzing and editing plasmid files (GenBank, SnapGene),
+  (8) Analyzing variants and clinical data.
 metadata:
   tags: [biology, protein, genomics, chemistry, bioinformatics, drug-discovery]
 ---
@@ -43,7 +44,7 @@ Before using the API, verify your skill is up to date:
 curl -s "https://api.openbio.tech/api/v1/tools/skill-version"
 ```
 
-This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.0.4**). If the API returns a newer version:
+This returns `{"skill": "openbio", "version": "X.Y.Z", ...}`. Compare against the `version` field at the top of this file (currently **1.1.0**). If the API returns a newer version:
 
 ```bash
 bunx skills update
@@ -119,6 +120,10 @@ What do you need?
 ├─ Structure prediction/design?
 │   └─ Read rules/structure-prediction.md
 │       → Boltz, Chai, ProteinMPNN, LigandMPNN
+│
+├─ CRISPR guide design/scoring?
+│   └─ Read rules/deepcrispr.md
+│       → submit_crispr_prediction, submit_crispr_guide_design
 │
 ├─ Pathway analysis?
 │   └─ Read rules/pathway-analysis.md
@@ -196,6 +201,7 @@ Read these for domain-specific knowledge:
 | [rules/geodock.md](rules/geodock.md) | GeoDock | Protein-protein docking |
 | [rules/pinal.md](rules/pinal.md) | Pinal | De novo design from text |
 | [rules/boltzgen.md](rules/boltzgen.md) | BoltzGen | End-to-end binder design |
+| [rules/deepcrispr.md](rules/deepcrispr.md) | DeepCRISPR | CRISPR sgRNA efficiency prediction and guide design |
 
 ## Tool Categories Summary
 
@@ -209,6 +215,7 @@ Read these for domain-specific knowledge:
 | Molecular biology | 15 | design_primers, restriction_digest, assemble_gibson |
 | Plasmid | 2 | parse_plasmid_file, edit_plasmid |
 | Structure prediction | 15+ | submit_boltz_prediction, submit_proteinmpnn_prediction |
+| CRISPR | 3 | submit_crispr_prediction, submit_crispr_guide_design, get_crispr_tool_info |
 | Pathway analysis | 26 | analyze_gene_list, get_string_network, go_enrichment, convert_gene_ids |
 | Clinical data | 22 | search_clinical_trials, clinvar_search |
 
